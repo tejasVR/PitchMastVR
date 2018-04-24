@@ -14,10 +14,10 @@ public class PresentationManager : MonoBehaviour {
 
     public RawImage currentSlide;
     public int slideNumber = 0;
-    public Texture[] slides;
+    public Texture2D[] slides;
 
 	void Start () {
-        //CollectImages();
+        CollectImages();
         //slides = new Texture[totalNumberOfSlides];
 
         // Set the starting slide as the first slides in the slides array
@@ -48,13 +48,15 @@ public class PresentationManager : MonoBehaviour {
         }
     }
 
-    /*public void CollectImages()
+    public void CollectImages()
     {
-        for (int i = 0; i < totalNumberOfSlides - 1; i++)
+        slides = Resources.LoadAll<Texture2D>("Presentation_01");
+        print("called Collect Images");
+        //for (int i = 0; i < totalNumberOfSlides - 1; i++)
         {
 
         }
-    }*/
+    }
 
     // Function for going to the previous slide
     public void SlidePrevious()
