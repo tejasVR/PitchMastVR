@@ -50,12 +50,8 @@ public class PresentationManager : MonoBehaviour {
 
     public void CollectImages()
     {
-        slides = Resources.LoadAll<Texture2D>("Presentation_01");
-        print("called Collect Images");
-        //for (int i = 0; i < totalNumberOfSlides - 1; i++)
-        {
-
-        }
+        // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
+        slides = Resources.LoadAll<Texture2D>("Presentation_01");       
     }
 
     // Function for going to the previous slide
