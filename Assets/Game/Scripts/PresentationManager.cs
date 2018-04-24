@@ -34,16 +34,18 @@ public class PresentationManager : MonoBehaviour {
         {
             touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
 
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.x < 0)
+            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
             {
-                SlidePrevious();
+                if (touchpad.x < 0)
+                {
+                    SlidePrevious();
+                }
+                else
+                {
+                    SlideNext();
+                }
             }
-
         }
-
-
-
-
     }
 
     /*public void CollectImages()
@@ -76,7 +78,7 @@ public class PresentationManager : MonoBehaviour {
         slideNumber++;
 
         // if the slides number is greater than the total number of slides, go to the first slide available
-        if (slideNumber > slides.Length + 1)
+        if (slideNumber > slides.Length - 1)
         {
             slideNumber = 0;
         }
