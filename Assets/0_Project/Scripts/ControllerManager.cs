@@ -9,6 +9,8 @@ public class ControllerManager : MonoBehaviour {
 
     public LaserPointer laserPointer;
 
+    public DrawLineManager dLine;
+
     // For Drawing on screen
     private MeshLineRenderer currLine;
     public Material lmat;
@@ -33,32 +35,20 @@ public class ControllerManager : MonoBehaviour {
 
             if (laserPointer.collidingWithScreen)
             {
-                GameObject go = new GameObject("line");
-                go.AddComponent<MeshFilter>();
-                go.AddComponent<MeshRenderer>();
-                currLine = go.AddComponent<MeshLineRenderer>();
-
-                currLine.lmat = new Material(lmat);
-                currLine.setWidth(width);
+                dLine.DrawInitialize();
             }
         }
 
         if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
         {
-            currLine.AddPoint(screenHitPoint);
-            numClicks++;
+            dLine.DrawLine();
         }
-        else
-        {
-        }
-
+        
         if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
         {
-            device.TriggerHapticPulse(500);
             laserPointer.LaserOff();
 
-            numClicks = 0;
-            currLine = null;
+            dLine.DrawStop();
         }
     }
 }

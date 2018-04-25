@@ -29,7 +29,7 @@ public class MeshLineRenderer : MonoBehaviour
         GetComponent<MeshRenderer>().material = lmat;
         //this.AddComponent<MeshRenderer>().material = lmat;
 
-        lineSize = BrushManager.cursorsize;
+        //lineSize = .1f;
     }
 
     public void setWidth(float width)
@@ -67,31 +67,6 @@ public class MeshLineRenderer : MonoBehaviour
         {
             q = new Vector3[2];
         }
-
-        //	Vector3 n = Vector3.Cross(s, e);
-        //	Vector3 l = Vector3.Cross(n, s -e);
-        //	if (l != Vector3.zero) {
-        //		lastV = l;
-        //	}
-        ///	else {
-        //		l =lastV;
-        //	}
-
-        //	l.Normalize();
-
-
-        /*
-		if(all) {
-			q[0] = transform.InverseTransformPoint(s + l * w);
-			q[1] = transform.InverseTransformPoint(s + l * -w);
-			q[2] = transform.InverseTransformPoint(e + l * w);
-			q[3] = transform.InverseTransformPoint(e + l * -w);
-		} else {
-			q[0] = transform.InverseTransformPoint(s + l * w);
-			q[1] = transform.InverseTransformPoint(s + l * -w);
-		}
-		return q;
-*/
 
         //this method switch the brush strokes to adheare to the local position of the controller allowing for a much larger
 
