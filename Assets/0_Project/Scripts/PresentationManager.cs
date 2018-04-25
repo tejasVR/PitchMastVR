@@ -58,7 +58,7 @@ public class PresentationManager : MonoBehaviour {
 
         if (device.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
         {
-            CollectImages();
+            PresentImages();
         }
 
         if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
@@ -68,9 +68,9 @@ public class PresentationManager : MonoBehaviour {
 
     }
 
-    public void CollectImages()
+    public void PresentImages()
     {
-        print("Presentation Local Images Path: " + presentationLocalImagesPath);
+        //print("Presentation Local Images Path: " + presentationLocalImagesPath);
 
 
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
@@ -96,7 +96,7 @@ public class PresentationManager : MonoBehaviour {
         {
             //WWW www = new WWW("file://" + explorerPDFPath);
             PDFConvert.ConvertPDF(explorerPDFPath);
-
+            PresentImages();
             //print(www.ToString());
            // print(explorerPDFPath);
         }
@@ -136,6 +136,6 @@ public class PresentationManager : MonoBehaviour {
     public static void GetPresentionPath(string presentationPath)
     {
         presentationLocalImagesPath = presentationPath;
-        print("Presentation Local Images Path: " + presentationLocalImagesPath);
+        //print("Presentation Local Images Path: " + presentationLocalImagesPath);
     }
 }
