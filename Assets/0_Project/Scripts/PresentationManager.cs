@@ -25,7 +25,7 @@ public class PresentationManager : MonoBehaviour {
         //slides = new Texture[totalNumberOfSlides];
 
         // Set the starting slide as the first slides in the slides array
-        currentSlide.GetComponent<RawImage>().texture = slides[0];
+        
 	}
 	
 	void Update () {
@@ -61,7 +61,12 @@ public class PresentationManager : MonoBehaviour {
     public void CollectImages()
     {
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
-        slides = Resources.LoadAll<Texture2D>(presentationImagesPath);    
+        slides = Resources.LoadAll<Texture2D>(presentationImagesPath);
+        slideNumber = 0;
+        currentSlide.GetComponent<RawImage>().texture = slides[0];
+        //print(slides[0]);
+        //print("Collecting Images");
+
     }
 
     // Function for going to the previous slide

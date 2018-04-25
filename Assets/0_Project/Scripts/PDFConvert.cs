@@ -24,7 +24,6 @@ namespace RootNamespace.Samples.MagickNET
 
         void Start()
         {
-            presentationManager = GetComponent<PresentationManager>();
             CheckParentDirectory();
 
             //print(pdfToConvert.name.ToString());
@@ -49,7 +48,7 @@ namespace RootNamespace.Samples.MagickNET
             var pdfImagesDirectory = parentFolderPath + "/" + presentationImagePath + "/" + pdfName;
 
             // Sets the presentation manager pull path to the PDF folder derived from the PDF selected
-            presentationManager.presentationImagesPath = pdfImagesDirectory;
+            presentationManager.presentationImagesPath = presentationImagePath + "/" + pdfName;
 
             print(pdfImagesDirectory);
 
@@ -63,13 +62,13 @@ namespace RootNamespace.Samples.MagickNET
                 
                 // Settings the density to 300 dpi will create an image with a better quality
                 MagickReadSettings settings = new MagickReadSettings();
-                settings.Density = new Density(300, 300);
+                settings.Density = new Density(600, 600);
 
                 // Create an image collection when splitting up the PDF
                 using (MagickImageCollection images = new MagickImageCollection())
                 {
                     // Add all the pages of the pdf file to the collection
-                    images.Read(pdfPath);
+                    images.Read(pdfPath, settings);
 
                     int page = 1;
                     foreach (MagickImage image in images)
@@ -78,22 +77,25 @@ namespace RootNamespace.Samples.MagickNET
 
 
                         // Write page to file that contains the page number
-                        var imagePath = pdfImagesDirectory + "/Slide_" + page + ".png";
+                        var imagePath = pdfImagesDirectory + "/Slide_" + page.ToString("00") + ".png";
                         image.Write(imagePath);
                         //AssetDatabase.Refresh();
 
                         // Import the newly created image and convert it to type Texture2D
+                        
+                    /*
                         AssetDatabase.ImportAsset(imagePath);
                         TextureImporter importer = AssetImporter.GetAtPath(imagePath) as TextureImporter;
                         importer.textureType = TextureImporterType.Sprite;
                         AssetDatabase.WriteImportSettingsIfDirty(imagePath);
+                    */    
                         // Writing to a specific format works the same as for a single image
                         //image.Format = MagickFormat.Ptif;
                         //image.Write("PDF.Page" + page + ".tif");
                         page++;
                     }
 
-                    AssetDatabase.Refresh();
+                    //AssetDatabase.Refresh();
 
                 }
 
