@@ -16,13 +16,13 @@ namespace RootNamespace.Samples.MagickNET
 
         void Start()
         {
-            //ConvertPDF();
+            ConvertPDF();
 
-            CreateWatermark();
+            //CreateWatermark();
         }
 
 
-        /*public void ConvertPDF()
+        public void ConvertPDF()
         {
             MagickReadSettings settings = new MagickReadSettings();
             // Settings the density to 300 dpi will create an image with a better quality
@@ -44,9 +44,9 @@ namespace RootNamespace.Samples.MagickNET
                     page++;
                 }
             }
-        }*/
+        }
 
-        public void CreateWatermark()
+        /*public void CreateWatermark()
         {
             // our image paths
             var sourcePath = Application.dataPath + "/0_Project/Textures/Coming Soon.jpg";
@@ -70,9 +70,9 @@ namespace RootNamespace.Samples.MagickNET
                 }
 
                 // Save the result
-                image.Write(Application.dataPath + "/Images/" + "FujiFilmFinePixS1Pro-watermark.jpg");
+                image.Write(Application.dataPath + "/0_Project/Textures/" + "Overwrite-watermark.jpg");
             }
-        }
+        }*/
 }
 
 
