@@ -9,17 +9,20 @@ using UnityEditor;
 /*
  * Trying to convert PDF into a folder of PNG/JPEG images using the ImageMagick API
  */
-namespace RootNamespace.Samples.MagickNET
-{
+
+//namespace RootNamespace.Samples.MagickNET
+//{
     public class PDFConvert : MonoBehaviour
     {
+        
         // Public get the PDF we are trying to convert
-        public Object pdfToConvert;
+        //public Object pdfToConvert;
 
         // Set the overhead parents and presentation folder (for all presentations)
         private string parentFolderPath = "Assets/Resources";
         private string presentationImagePath = "Presentations";
 
+        // Call the presentation manager so we can set the path to where the local images for the presentation are generated
         public PresentationManager presentationManager;
 
         void Start()
@@ -29,7 +32,8 @@ namespace RootNamespace.Samples.MagickNET
             //print(pdfToConvert.name.ToString());
             
             // Convert the given PDF into images to then be used in the presentation
-            ConvertPDF();
+            //var pdfPath = AssetDatabase.GetAssetPath(pdfToConvert);
+            //ConvertPDF(pdfPath);
 
             
 
@@ -37,18 +41,17 @@ namespace RootNamespace.Samples.MagickNET
         }
 
 
-        public void ConvertPDF()
+        public void ConvertPDF(string pdfPath)
         {
 
             //var pdfPath = Application.dataPath + "/0_Project/Textures/Neon Bullet_ MassDigi 18_5.pdf";
 
             // pdfPath = where the given PDF is located in the project
-            var pdfPath = AssetDatabase.GetAssetPath(pdfToConvert);
             var pdfName = pdfToConvert.name;
             var pdfImagesDirectory = parentFolderPath + "/" + presentationImagePath + "/" + pdfName;
 
             // Sets the presentation manager pull path to the PDF folder derived from the PDF selected
-            presentationManager.presentationImagesPath = presentationImagePath + "/" + pdfName;
+            presentationManager.presentationLocalImagesPath = presentationImagePath + "/" + pdfName;
 
             print(pdfImagesDirectory);
 
@@ -160,6 +163,4 @@ namespace RootNamespace.Samples.MagickNET
             }
         }*/
 }
-
-
-}
+//}

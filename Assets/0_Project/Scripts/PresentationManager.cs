@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 
 public class PresentationManager : MonoBehaviour {
 
+    public static PDFConvert pdfConvert;
     // Basic tracking for Vive wands
     public SteamVR_TrackedObject trackedObj;
     private SteamVR_Controller.Device device;
@@ -18,7 +20,10 @@ public class PresentationManager : MonoBehaviour {
     public int slideNumber = 0;
     public Texture2D[] slides;
 
-    public string presentationImagesPath;
+    public string explorerPDFPath;
+
+    // The local path within the Unity project where a presentations' images are stored
+    public string presentationLocalImagesPath;
 
 	void Start () {
         //CollectImages();
@@ -56,17 +61,36 @@ public class PresentationManager : MonoBehaviour {
             CollectImages();
         }
 
+        if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+        {
+            OpenExplorer();
+        }
+
     }
 
     public void CollectImages()
     {
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
-        slides = Resources.LoadAll<Texture2D>(presentationImagesPath);
+        slides = Resources.LoadAll<Texture2D>(presentationLocalImagesPath);
         slideNumber = 0;
         currentSlide.GetComponent<RawImage>().texture = slides[0];
         //print(slides[0]);
         //print("Collecting Images");
 
+    }
+
+    public void OpenExplorer()
+    {
+        explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "C:/../Documents", "pdf");
+    }
+
+    public void GetNewPDF()
+    {
+        if (explorerPDFPath != null)
+        {
+            WWW www = new WWW("file://" + explorerPDFPath);
+            pdfConvert.
+        }
     }
 
     // Function for going to the previous slide
