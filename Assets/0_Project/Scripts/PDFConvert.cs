@@ -14,19 +14,19 @@ using UnityEditor;
 //{
 public class PDFConvert : MonoBehaviour
 {
-        
+
     // Public get the PDF we are trying to convert
     //public Object pdfToConvert;
 
     // Set the overhead parents and presentation folder (for all presentations)
-    private string parentFolderPath = "Assets/Resources";
-    private string presentationImagePath = "Presentations";
+    private static string parentFolderPath = "Assets/Resources";
+    private static string presentationImagePath = "Presentations";
+
 
     // The path to the pdf that we want to split up and create a presentation of    
     public string pdfPath;
 
     // Call the presentation manager so we can set the path to where the local images for the presentation are generated
-    public PresentationManager presentationManager;
 
     void Start()
     {
@@ -41,13 +41,11 @@ public class PDFConvert : MonoBehaviour
         // Let's not call the Convert function on start
         //ConvertPDF(pdfPath);
 
-            
-
         //CreateWatermark();
     }
 
     // Converts a PDF from a given file path, splits its slides into images, and puts these images into a designated folder
-    public void ConvertPDF(string pdfPath)
+    public static void ConvertPDF(string pdfPath)
     {
         //Get name of the pdf
         var pdfName = Path.GetFileNameWithoutExtension(pdfPath);
@@ -55,9 +53,7 @@ public class PDFConvert : MonoBehaviour
         // Create the name of the directory that the images of the PDF will be stored
         var pdfImagesDirectory = parentFolderPath + "/" + presentationImagePath + "/" + pdfName;
 
-        
-
-        print(pdfImagesDirectory);
+        //print(pdfImagesDirectory);
 
         // If the folder needed to house the images for this specific presentation doesn't yet exists (meaning, we haven't yet crated the PDF), then convert the PDF
         if (!AssetDatabase.IsValidFolder(pdfImagesDirectory))
@@ -97,11 +93,12 @@ public class PDFConvert : MonoBehaviour
                 //refreshes the database to finanlize the import of the PDF images
                 AssetDatabase.Refresh();
             }
+            
         }
 
-        // Sets the presentation manager pull path to the PDF folder derived from the PDF selected
-        presentationManager.presentationLocalImagesPath = presentationImagePath + "/" + pdfName;
 
+        // Sets the presentation manager pull path to the PDF folder derived from the PDF selected
+        PresentationManager.GetPresentionPath(presentationImagePath + "/" + pdfName);
         //var pdfImagesDirectory = parentFolderPath + "/" + presentationImagePath + "/" + pdfName;
     }
 
@@ -112,7 +109,7 @@ public class PDFConvert : MonoBehaviour
         {
             //if it doesn't, create it
             AssetDatabase.CreateFolder(parentFolderPath, presentationImagePath);
-            print("Checked the parent directory: " + parentFolderPath + presentationImagePath);
+            //print("Checked the parent directory: " + parentFolderPath + presentationImagePath);
 
         }
     }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class PresentationManager : MonoBehaviour {
 
-    public static PDFConvert pdfConvert;
+    //public static PDFConvert pdfConvert;
     // Basic tracking for Vive wands
     public SteamVR_TrackedObject trackedObj;
     private SteamVR_Controller.Device device;
@@ -23,7 +23,7 @@ public class PresentationManager : MonoBehaviour {
     public string explorerPDFPath;
 
     // The local path within the Unity project where a presentations' images are stored
-    public string presentationLocalImagesPath;
+    public static string presentationLocalImagesPath;
 
 	void Start () {
         //CollectImages();
@@ -70,10 +70,15 @@ public class PresentationManager : MonoBehaviour {
 
     public void CollectImages()
     {
+        print("Presentation Local Images Path: " + presentationLocalImagesPath);
+
+
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
         slides = Resources.LoadAll<Texture2D>(presentationLocalImagesPath);
         slideNumber = 0;
         currentSlide.GetComponent<RawImage>().texture = slides[0];
+
+
         //print(slides[0]);
         //print("Collecting Images");
 
@@ -81,15 +86,19 @@ public class PresentationManager : MonoBehaviour {
 
     public void OpenExplorer()
     {
-        explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "C:/../Documents", "pdf");
+        explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "", "pdf");
+        GetNewPDF();
     }
 
     public void GetNewPDF()
     {
         if (explorerPDFPath != null)
         {
-            WWW www = new WWW("file://" + explorerPDFPath);
-            pdfConvert.
+            //WWW www = new WWW("file://" + explorerPDFPath);
+            PDFConvert.ConvertPDF(explorerPDFPath);
+
+            //print(www.ToString());
+           // print(explorerPDFPath);
         }
     }
 
@@ -122,5 +131,11 @@ public class PresentationManager : MonoBehaviour {
 
         // change the current slide image to reflect new slide
         currentSlide.GetComponent<RawImage>().texture = slides[slideNumber];
+    }
+
+    public static void GetPresentionPath(string presentationPath)
+    {
+        presentationLocalImagesPath = presentationPath;
+        print("Presentation Local Images Path: " + presentationLocalImagesPath);
     }
 }
