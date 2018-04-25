@@ -17,12 +17,11 @@ namespace RootNamespace.Samples.MagickNET
         public Object pdfToConvert;
 
         // Set the overhead parents and presentation folder (for all presentations)
-        private string parentFolderPath = "Assets/0_Project/";
-        private string presenationImagePath = "/PresentationImages";
+        private string parentFolderPath = "Assets";
+        private string presentationImagePath = "PresentationImages";
 
         void Start()
         {
-            // Create Directory for all presentation images it it doesn't exist
             CheckParentDirectory();
 
             //print(pdfToConvert.name.ToString());
@@ -38,18 +37,17 @@ namespace RootNamespace.Samples.MagickNET
 
         public void ConvertPDF()
         {
+            //var pdfPath = Application.dataPath + "/0_Project/Textures/Neon Bullet_ MassDigi 18_5.pdf";
 
-            var pdfPath = Application.dataPath + "/0_Project/Textures/Neon Bullet_ MassDigi 18_5.pdf";
-            var imagesPath = directoryPath + "/NeonBullet";
+            // pdfPath = where the given PDF is located in the project
+            var pdfPath = AssetDatabase.GetAssetPath(pdfToConvert);
+            var pdfName = pdfToConvert.name;
 
-            if (!AssetDatabase.IsValidFolder(imagesPath))
-            {
-                //if it doesn't, create it
-                //AssetDatabase.CreateFolder(imagesPath);
-            }
+            //var pdfImagesDirectory = parentFolderPath + "/" + presentationImagePath + "/" + pdfName;
 
+            var pdfImagesDirectory = CheckPresentationDirectory(pdfName);
 
-            MagickReadSettings settings = new MagickReadSettings();
+             MagickReadSettings settings = new MagickReadSettings();
             // Settings the density to 300 dpi will create an image with a better quality
             settings.Density = new Density(300, 300);
 
@@ -65,7 +63,7 @@ namespace RootNamespace.Samples.MagickNET
                    
 
                     // Write page to file that contains the page number
-                    image.Write(imagesPath + "/PDF.Page" + page + ".png");
+                    image.Write(pdfImagesDirectory + "/PDF.Page" + page + ".png");
                     // Writing to a specific format works the same as for a single image
                     //image.Format = MagickFormat.Ptif;
                     //image.Write("PDF.Page" + page + ".tif");
@@ -74,14 +72,29 @@ namespace RootNamespace.Samples.MagickNET
             }
         }
 
+        // Checks directory where all our presentations will be kept
         private void CheckParentDirectory()
         {
-            if (!AssetDatabase.IsValidFolder(parentFolderPath + presenationImagePath))
+            if (!AssetDatabase.IsValidFolder(parentFolderPath + "/" + presentationImagePath))
             {
                 //if it doesn't, create it
-                AssetDatabase.CreateFolder(parentFolderPath, presenationImagePath);
+                AssetDatabase.CreateFolder(parentFolderPath, presentationImagePath);
+                print("Checked the parent directory: " + parentFolderPath + presentationImagePath);
 
             }
+        }
+
+        // Checks directory for presentation we want to convert
+        private string CheckPresentationDirectory(string presentationName)
+        {
+            string path = parentFolderPath + "/" + presentationImagePath + "/" + presentationName;
+            if (!AssetDatabase.IsValidFolder(path))
+            {
+                //if it doesn't, create it
+                AssetDatabase.CreateFolder(parentFolderPath + "/" + presentationImagePath, presentationName);
+                print("Checked the presImage directory: " + path);
+            }
+            return path;
         }
 
         /*public void CreateWatermark()
