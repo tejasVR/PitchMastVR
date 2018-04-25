@@ -60,19 +60,29 @@ namespace RootNamespace.Samples.MagickNET
                 foreach (MagickImage image in images)
                 {
                     // Create Directory for all presentation images it it doesn't exist
-                   
+
 
                     // Write page to file that contains the page number
-                    image.Write(pdfImagesDirectory + "/PDF.Page" + page + ".png");
+                    var imagePath = pdfImagesDirectory + "/PDF.Page" + page + ".png";
+                    image.Write(imagePath);
+                    //AssetDatabase.Refresh();
+
+                    // Import the newly created image and convert it to type Texture2D
+                    AssetDatabase.ImportAsset(imagePath);
+                    TextureImporter importer = AssetImporter.GetAtPath(imagePath) as TextureImporter;
+                    importer.textureType = TextureImporterType.Sprite;
+                    AssetDatabase.WriteImportSettingsIfDirty(imagePath);
                     // Writing to a specific format works the same as for a single image
                     //image.Format = MagickFormat.Ptif;
                     //image.Write("PDF.Page" + page + ".tif");
                     page++;
                 }
+
+                AssetDatabase.Refresh();
+
             }
 
             //refreshes the database to actually import images
-            AssetDatabase.Refresh();
         }
 
         // Checks directory where all our presentations will be kept
