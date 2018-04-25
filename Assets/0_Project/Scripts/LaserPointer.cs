@@ -5,6 +5,9 @@ using UnityEngine;
 public class LaserPointer : MonoBehaviour {
 
     private LineRenderer lr;
+    public bool collidingWithScreen;
+
+    public ControllerManager controllerMaanger;
 
 	// Use this for initialization
 	void Start () {
@@ -22,13 +25,16 @@ public class LaserPointer : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit))
         {
-            if (hit.collider)
+            if (hit.collider.gameObject.tag == "Screen")
             {
                 lr.SetPosition(1, hit.point);
+                controllerMaanger.screenHitPoint = hit.point;
+                collidingWithScreen = true;
             }
         } else
         {
             lr.SetPosition(1, transform.forward * 5);
+            collidingWithScreen = false;
         }
 		
 	}
