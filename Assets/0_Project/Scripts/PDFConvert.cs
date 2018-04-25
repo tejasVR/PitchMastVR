@@ -18,7 +18,7 @@ namespace RootNamespace.Samples.MagickNET
 
         // Set the overhead parents and presentation folder (for all presentations)
         private string parentFolderPath = "Assets/Resources";
-        private string presentationImagePath = "PresentationImages";
+        private string presentationImagePath = "Presentations";
 
         public PresentationManager presentationManager;
 
@@ -62,7 +62,8 @@ namespace RootNamespace.Samples.MagickNET
                 
                 // Settings the density to 300 dpi will create an image with a better quality
                 MagickReadSettings settings = new MagickReadSettings();
-                settings.Density = new Density(600, 600);
+                settings.Density = new Density(500, 500);
+                
 
                 // Create an image collection when splitting up the PDF
                 using (MagickImageCollection images = new MagickImageCollection())
@@ -73,29 +74,26 @@ namespace RootNamespace.Samples.MagickNET
                     int page = 1;
                     foreach (MagickImage image in images)
                     {
-                        // Create Directory for all presentation images it it doesn't exist
-
+                        //image.Density = new Density(300, 300);
 
                         // Write page to file that contains the page number
-                        var imagePath = pdfImagesDirectory + "/Slide_" + page.ToString("00") + ".png";
+                        var imagePath = pdfImagesDirectory + "/Slide_" + page.ToString("000") + ".jpg";
                         image.Write(imagePath);
                         //AssetDatabase.Refresh();
 
                         // Import the newly created image and convert it to type Texture2D
-                        
-                    /*
                         AssetDatabase.ImportAsset(imagePath);
                         TextureImporter importer = AssetImporter.GetAtPath(imagePath) as TextureImporter;
                         importer.textureType = TextureImporterType.Sprite;
                         AssetDatabase.WriteImportSettingsIfDirty(imagePath);
-                    */    
+                        
                         // Writing to a specific format works the same as for a single image
                         //image.Format = MagickFormat.Ptif;
                         //image.Write("PDF.Page" + page + ".tif");
                         page++;
                     }
 
-                    //AssetDatabase.Refresh();
+                    AssetDatabase.Refresh();
 
                 }
 
