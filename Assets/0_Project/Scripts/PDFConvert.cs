@@ -5,17 +5,19 @@ using ImageMagick;
 
 
 /*
- * Trying to convert PDF into a folder of PNG/JPEG images using the GhostScript API
+ * Trying to convert PDF into a folder of PNG/JPEG images using the ImageMagick API
  */
 namespace RootNamespace.Samples.MagickNET
 {
     public class PDFConvert : MonoBehaviour
     {
 
-        public Object pdfToConvert;
+        //public Object pdfToConvert;
 
         void Start()
         {
+
+            //print(pdfToConvert.name.ToString());
             ConvertPDF();
 
             //CreateWatermark();
@@ -24,6 +26,8 @@ namespace RootNamespace.Samples.MagickNET
 
         public void ConvertPDF()
         {
+
+            var pdfPath = Application.dataPath + "/0_Project/Textures/Neon Bullet_ MassDigi 18_5.pdf";
             MagickReadSettings settings = new MagickReadSettings();
             // Settings the density to 300 dpi will create an image with a better quality
             settings.Density = new Density(300, 300);
@@ -31,7 +35,7 @@ namespace RootNamespace.Samples.MagickNET
             using (MagickImageCollection images = new MagickImageCollection())
             {
                 // Add all the pages of the pdf file to the collection
-                images.Read(pdfToConvert.ToString(), settings);
+                images.Read(pdfPath);//h, settings);
 
                 int page = 1;
                 foreach (MagickImage image in images)
