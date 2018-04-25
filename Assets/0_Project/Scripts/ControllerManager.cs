@@ -9,6 +9,8 @@ public class ControllerManager : MonoBehaviour {
 
     public LaserPointer laserPointer;
 
+
+
 	// Use this for initialization
 	void Start () {
         laserPointer.LaserOff();

@@ -28,7 +28,7 @@ public class LaserPointer : MonoBehaviour {
             }
         } else
         {
-            lr.SetPosition(1, transform.forward * 25);
+            lr.SetPosition(1, transform.forward * 5);
         }
 		
 	}
