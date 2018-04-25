@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ImageMagick;
+using System.IO;
+using UnityEditor;
 
 
 /*
@@ -11,14 +13,24 @@ namespace RootNamespace.Samples.MagickNET
 {
     public class PDFConvert : MonoBehaviour
     {
+        // Public get the PDF we are trying to convert
+        public Object pdfToConvert;
 
-        //public Object pdfToConvert;
+        // Set the overhead parents and presentation folder (for all presentations)
+        private string parentFolderPath = "Assets/0_Project/";
+        private string presenationImagePath = "/PresentationImages";
 
         void Start()
         {
+            // Create Directory for all presentation images it it doesn't exist
+            CheckParentDirectory();
 
             //print(pdfToConvert.name.ToString());
+            
+            // Convert the given PDF into images to then be used in the presentation
             ConvertPDF();
+
+            
 
             //CreateWatermark();
         }
@@ -28,6 +40,15 @@ namespace RootNamespace.Samples.MagickNET
         {
 
             var pdfPath = Application.dataPath + "/0_Project/Textures/Neon Bullet_ MassDigi 18_5.pdf";
+            var imagesPath = directoryPath + "/NeonBullet";
+
+            if (!AssetDatabase.IsValidFolder(imagesPath))
+            {
+                //if it doesn't, create it
+                //AssetDatabase.CreateFolder(imagesPath);
+            }
+
+
             MagickReadSettings settings = new MagickReadSettings();
             // Settings the density to 300 dpi will create an image with a better quality
             settings.Density = new Density(300, 300);
@@ -40,13 +61,26 @@ namespace RootNamespace.Samples.MagickNET
                 int page = 1;
                 foreach (MagickImage image in images)
                 {
+                    // Create Directory for all presentation images it it doesn't exist
+                   
+
                     // Write page to file that contains the page number
-                    image.Write("PDF.Page" + page + ".png");
+                    image.Write(imagesPath + "/PDF.Page" + page + ".png");
                     // Writing to a specific format works the same as for a single image
                     //image.Format = MagickFormat.Ptif;
                     //image.Write("PDF.Page" + page + ".tif");
                     page++;
                 }
+            }
+        }
+
+        private void CheckParentDirectory()
+        {
+            if (!AssetDatabase.IsValidFolder(parentFolderPath + presenationImagePath))
+            {
+                //if it doesn't, create it
+                AssetDatabase.CreateFolder(parentFolderPath, presenationImagePath);
+
             }
         }
 
