@@ -18,8 +18,10 @@ public class PresentationManager : MonoBehaviour {
     public int slideNumber = 0;
     public Texture2D[] slides;
 
+    public string presentationImagesPath;
+
 	void Start () {
-        CollectImages();
+        //CollectImages();
         //slides = new Texture[totalNumberOfSlides];
 
         // Set the starting slide as the first slides in the slides array
@@ -48,12 +50,18 @@ public class PresentationManager : MonoBehaviour {
                 }
             }
         }
+
+        if (device.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+        {
+            CollectImages();
+        }
+
     }
 
     public void CollectImages()
     {
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
-        slides = Resources.LoadAll<Texture2D>("Presentation_01");       
+        slides = Resources.LoadAll<Texture2D>(presentationImagesPath);    
     }
 
     // Function for going to the previous slide
