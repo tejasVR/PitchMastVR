@@ -70,6 +70,9 @@ namespace RootNamespace.Samples.MagickNET
                     page++;
                 }
             }
+
+            //refreshes the database to actually import images
+            AssetDatabase.Refresh();
         }
 
         // Checks directory where all our presentations will be kept
