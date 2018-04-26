@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class VRFileBrowser : MonoBehaviour {
 
+    public SteamVR_TrackedObject trackedObj;
+    private SteamVR_Controller.Device device;
+    public Vector2 touchpad;
+
+    public ScrollRect scrollRect;
+
+
     string myPath;
     public List<string> fileNames = new List<string>();
     public GameObject contentUI;
@@ -21,6 +28,23 @@ public class VRFileBrowser : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (trackedObj.gameObject.activeInHierarchy)
+        {
+            device = SteamVR_Controller.Input((int)trackedObj.index);
+
+            touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
+
+            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y > 0)
+            {
+                scrollRect.verticalNormalizedPosition = 1f;
+            }
+
+            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y < 0)
+            {
+                scrollRect.verticalNormalizedPosition = 0f;
+            }
+        }
 		
 	}
 
