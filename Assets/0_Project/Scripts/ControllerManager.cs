@@ -41,14 +41,17 @@ public class ControllerManager : MonoBehaviour {
 
         if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
         {
-            dLine.DrawLine(screenHitPoint);
+            if (laserPointer.collidingWithScreen)
+            {
+                dLine.DrawLine(screenHitPoint);
+            }
         }
         
         if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
         {
             laserPointer.LaserOff();
 
-            dLine.DrawStop();
+            dLine.DrawStop(transform.position);
         }
     }
 }

@@ -25,7 +25,7 @@ public class DrawLineManager : MonoBehaviour {
     public Vector3 lastpos;
 
     // Spheres created to form of the draw mesh
-    public GameObject sphere;
+   // public GameObject sphere;
     public Transform sphereHigh;
     public Transform sphereLow;
     //public Transform sphererl;
@@ -60,8 +60,9 @@ public class DrawLineManager : MonoBehaviour {
         numClicks++;
     }
 
-    public void DrawStop()
+    public void DrawStop(Vector3 controllerPosition)
     {
+        cursor.transform.position = controllerPosition;
         numClicks = 0;
         //currLine.transform.SetParent(meshparent);
         currLine = null;
