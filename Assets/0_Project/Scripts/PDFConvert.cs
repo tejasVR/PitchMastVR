@@ -47,6 +47,7 @@ public class PDFConvert : MonoBehaviour
     // Converts a PDF from a given file path, splits its slides into images, and puts these images into a designated folder
     public static void ConvertPDF(string pdfPath)
     {
+        print("Converting the PDF!");
         //Get name of the pdf
         var pdfName = Path.GetFileNameWithoutExtension(pdfPath);
 
@@ -79,10 +80,10 @@ public class PDFConvert : MonoBehaviour
                     image.Write(imagePath);
 
                     // Import the newly created image and convert it to type Texture2D
-                    AssetDatabase.ImportAsset(imagePath);
-                    TextureImporter importer = AssetImporter.GetAtPath(imagePath) as TextureImporter;
-                    importer.textureType = TextureImporterType.Sprite;
-                    AssetDatabase.WriteImportSettingsIfDirty(imagePath);
+                    //AssetDatabase.ImportAsset(imagePath);
+                    //TextureImporter importer = AssetImporter.GetAtPath(imagePath) as TextureImporter;
+                    //importer.textureType = TextureImporterType.Sprite;
+                    //AssetDatabase.WriteImportSettingsIfDirty(imagePath);
                         
                     // Writing to a specific format works the same as for a single image
                     //image.Format = MagickFormat.Ptif;

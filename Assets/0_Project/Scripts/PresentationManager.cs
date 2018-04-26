@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SimpleFileBrowser;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -36,42 +37,47 @@ public class PresentationManager : MonoBehaviour {
 	void Update () {
 
         // Update the Steam VR controllers every frame
-        device = SteamVR_Controller.Input((int)trackedObj.index);
-
-        // if we are touching the touchpad, get the coordinates of the Vector2
-        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
+        if (trackedObj.gameObject.activeInHierarchy)
         {
-            touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
+            device = SteamVR_Controller.Input((int)trackedObj.index);
 
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
+            if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
             {
-                if (touchpad.x < 0)
+                touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
+
+                if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
                 {
-                    SlidePrevious();
+                    if (touchpad.x < 0)
+                    {
+                        SlidePrevious();
+                    }
+                    else
+                    {
+                        SlideNext();
+                    }
                 }
-                else
-                {
-                    SlideNext();
-                }
+            }
+
+            if (device.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+            {
+                PresentImages();
+            }
+
+            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+            {
+                OpenExplorer();
             }
         }
 
-        if (device.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
-        {
-            PresentImages();
-        }
-
-        if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
-        {
-            OpenExplorer();
-        }
+        // if we are touching the touchpad, get the coordinates of the Vector2
+        
 
     }
 
     public void PresentImages()
     {
-        //print("Presentation Local Images Path: " + presentationLocalImagesPath);
-
+        print("Presentation Local Images Path: " + presentationLocalImagesPath);
+        print("Presenting images to canvas");
 
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
         slides = Resources.LoadAll<Texture2D>(presentationLocalImagesPath);
@@ -86,16 +92,51 @@ public class PresentationManager : MonoBehaviour {
 
     public void OpenExplorer()
     {
+        // Sets filters for file browser
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("PDF", ".pdf"));
+        FileBrowser.SetDefaultFilter(".pdf");
+
+        //Adds quick like to file browser
+        FileBrowser.AddQuickLink("Users", "C:\\Users", null);
+
+        // Show a save file dialog
+        // onSuccess event: not registered (which means this dialog is pretty useless)
+        // onCancel event: not registered
+        // Save file/folder: file, Initial path: "C:\", Title: "Save As", submit button text: "Save"
+        // FileBrowser.ShowSaveDialog( null, null, false, "C:\\", "Save As", "Save" );
+
+        // Show a select folder dialog 
+        // onSuccess event: print the selected folder's path
+        // onCancel event: print "Canceled"
+        // Load file/folder: folder, Initial path: default (Documents), Title: "Select Folder", submit button text: "Select"
+        // FileBrowser.ShowLoadDialog( (path) => { Debug.Log( "Selected: " + path ); }, 
+        //                                () => { Debug.Log( "Canceled" ); }, 
+        //                                true, null, "Select Folder", "Select" );
+
+
+
+        /*
         explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "", "pdf");
         GetNewPDF();
+        */
+
+        StartCoroutine(ShowLoadDialog());
     }
 
-    public void GetNewPDF()
+    IEnumerator ShowLoadDialog()
     {
-        if (explorerPDFPath != null)
+        yield return FileBrowser.WaitForLoadDialog(false, null, "Load PDF", "Load");
+        print("showing load dialog");
+        GetNewPDF(FileBrowser.Result);
+    }
+
+    public void GetNewPDF(string getPDFPath)
+    {
+        print("successfuly got the new PDF file");
+        if (getPDFPath != null)
         {
             //WWW www = new WWW("file://" + explorerPDFPath);
-            PDFConvert.ConvertPDF(explorerPDFPath);
+            PDFConvert.ConvertPDF(getPDFPath);
             PresentImages();
             //print(www.ToString());
            // print(explorerPDFPath);

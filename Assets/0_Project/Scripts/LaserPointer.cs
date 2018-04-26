@@ -10,7 +10,7 @@ public class LaserPointer : MonoBehaviour {
     public ControllerManager controllerMananger;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 
         lr = GetComponent<LineRenderer>();
 

@@ -15,6 +15,7 @@ public class DrawLineManager : MonoBehaviour {
 
     public int numClicks = 0;
     public Material matter;
+    private float width = .1f;
 
     //public GameObject UndoManager;
     //public Transform meshparent;
@@ -45,7 +46,7 @@ public class DrawLineManager : MonoBehaviour {
 
         //go.AddComponent<MeshCollider>().sharedMesh = meshparent.GetComponent<MeshFilter>().mesh;
 
-        currLine.setWidth(.1f);
+        currLine.setWidth(width);
         currLine.lmat = new Material(matter);
         if (currLine != null)
         {
