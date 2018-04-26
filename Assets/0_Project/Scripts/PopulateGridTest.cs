@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class PopulateGridTest : MonoBehaviour {
 
@@ -27,7 +29,7 @@ public class PopulateGridTest : MonoBehaviour {
         for (int i = 0; i < numberToCreate; i++)
         {
             newObj = (GameObject)Instantiate(cubePrefab, transform);
-            newObj.GetComponent<Renderer>().material.color = Random.ColorHSV();
+            newObj.GetComponent<Image>().color = Random.ColorHSV();
 
 
         }
