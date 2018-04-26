@@ -13,6 +13,8 @@ public class ControllerManager : MonoBehaviour {
     public DrawLineManager dLine;
     public PresentationManager presentationManager;
 
+    public bool fileBrowserOpen;
+
     // For Drawing on screen
     public Vector3 screenHitPoint;
 
