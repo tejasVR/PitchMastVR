@@ -15,8 +15,16 @@ public class VRFileBrowser : MonoBehaviour {
 
     string myPath;
     public List<string> fileNames = new List<string>();
+    public int fileNameNumber;
+    public int numberOfFiles;
     public GameObject contentUI;
     public GameObject buttonPrefab;
+
+    public int filesPerRow;
+    public float xSpacing;
+    public float ySpacing;
+
+    public Transform transformPoint;
 
 
 	// Use this for initialization
@@ -56,14 +64,36 @@ public class VRFileBrowser : MonoBehaviour {
         print("My Path Dir: " + myPath);
         DirectoryInfo dir = new DirectoryInfo(myPath);
         FileInfo[] info = dir.GetFiles("*");
+
         foreach (FileInfo f in info)
         {
-            newObj = (GameObject)Instantiate(buttonPrefab, contentUI.transform);
-            //newObj.GetComponent<Image>().color = Random.ColorHSV();
-            newObj.GetComponentInChildren<Text>().text = f.Name;
+            numberOfFiles++;
+        }
 
-            fileNames.Add(f.ToString());
-            print(f.Name);
+
+        //foreach (FileInfo f in info)
+        {
+            print("foreach function called");
+            int row = 0;
+            for(int i = 0; i < numberOfFiles; i++)
+            {
+                transformPoint.transform.position = new Vector3(transformPoint.transform.position.x + i * xSpacing, transformPoint.transform.position.y + row * ySpacing);
+
+                newObj = Instantiate(buttonPrefab, transformPoint.transform);
+                //newObj.GetComponent<Image>().color = Random.ColorHSV();
+                newObj.GetComponentInChildren<Text>().text = f.Name;
+
+                fileNames.Add(f.ToString());
+                print(f.Name);
+
+                if (i == filesPerRow - 1)
+                {
+                    row++;
+                    //i = 0;
+                }
+            }
+
+            
         }
     }
 }
