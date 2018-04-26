@@ -7,7 +7,7 @@ public class LaserPointer : MonoBehaviour {
     private LineRenderer lr;
     public bool collidingWithScreen;
 
-    public ControllerManager controllerMaanger;
+    public ControllerManager controllerMananger;
 
 	// Use this for initialization
 	void Start () {
@@ -28,7 +28,7 @@ public class LaserPointer : MonoBehaviour {
             if (hit.collider.gameObject.tag == "Screen")
             {
                 lr.SetPosition(1, hit.point);
-                controllerMaanger.screenHitPoint = hit.point;
+                controllerMananger.screenHitPoint = hit.point;
                 collidingWithScreen = true;
             }
         } else

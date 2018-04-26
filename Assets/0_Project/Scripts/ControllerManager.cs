@@ -41,7 +41,7 @@ public class ControllerManager : MonoBehaviour {
 
         if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
         {
-            dLine.DrawLine();
+            dLine.DrawLine(screenHitPoint);
         }
         
         if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))

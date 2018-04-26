@@ -33,6 +33,8 @@ public class DrawLineManager : MonoBehaviour {
     //public Transform sphererh;
     //public Transform spherelh;
 
+    public GameObject cursor;
+
 
     public void DrawInitialize()
     {
@@ -51,8 +53,9 @@ public class DrawLineManager : MonoBehaviour {
         }
     }
 
-    public void DrawLine()
+    public void DrawLine(Vector3 screenPoint)
     {
+        cursor.transform.position = screenPoint;
         currLine.AddPoint(sphereHigh.position, sphereLow.position);
         numClicks++;
     }
