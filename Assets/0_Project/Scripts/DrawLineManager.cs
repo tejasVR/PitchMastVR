@@ -56,7 +56,7 @@ public class DrawLineManager : MonoBehaviour {
 
     public void DrawLine(Vector3 screenPoint)
     {
-        cursor.transform.position = screenPoint;
+        cursor.transform.position = screenPoint;//Vector3.Lerp(cursor.transform.position, screenPoint, Time.deltaTime * 2f);
         currLine.AddPoint(sphereHigh.position, sphereLow.position);
         numClicks++;
     }
