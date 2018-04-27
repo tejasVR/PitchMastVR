@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using TMPro;
 
 public class VRFileBrowser : MonoBehaviour {
 
@@ -17,20 +18,23 @@ public class VRFileBrowser : MonoBehaviour {
     public List<string> fileNames = new List<string>();
     public int fileNameNumber;
     public int numberOfFiles;
-    public GameObject contentUI;
+    public GameObject content;
     public GameObject buttonPrefab;
 
     public int filesPerRow;
     public float xSpacing;
     public float ySpacing;
 
-    public Transform transformPoint;
+    public Transform fileStart;
 
 
 	// Use this for initialization
 	void Start () {
-        myPath = Application.dataPath + "/0_Project/Textures";
-        FindFile();
+        // Define beginning path as the overhead project folder
+        myPath = Application.dataPath + "/0_Project";
+
+        // Show the directory on start
+        ShowFileDirectory();
 
     }
 	
@@ -43,7 +47,7 @@ public class VRFileBrowser : MonoBehaviour {
 
             touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
 
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y > 0)
+            /*if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y > 0)
             {
                 scrollRect.verticalNormalizedPosition = 1f;
             }
@@ -51,47 +55,72 @@ public class VRFileBrowser : MonoBehaviour {
             if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y < 0)
             {
                 scrollRect.verticalNormalizedPosition = 0f;
-            }
+            }*/
         }
 		
 	}
 
 
-    public void FindFile()
+    public void ShowFileDirectory()
     {
+        // Create a new object called newObj
         GameObject newObj;
 
-        print("My Path Dir: " + myPath);
-        DirectoryInfo dir = new DirectoryInfo(myPath);
-        FileInfo[] info = dir.GetFiles("*");
+        // Print myPath so we know that we are viewing the correct directory
+        //print("My Path Dir: " + myPath);
 
-        foreach (FileInfo f in info)
+        // Create a DirectoryInfo object linked to myPath
+        DirectoryInfo dir = new DirectoryInfo(myPath);
+
+        // Create an array of FileInfo based on all the files in the DirectoryInfo
+        //FileInfo[] info = dir.GetDirectories("*");//dir.GetFiles("*");
+        DirectoryInfo[] allFiles = dir.GetDirectories("*");
+
+        // Count the number of files/folders in FileInfo
+        /*foreach (FileInfo f in info)
         {
             numberOfFiles++;
-        }
+        }*/
 
-
+        int row = 0;
+        int column = 0;
         //foreach (FileInfo f in info)
         {
-            print("foreach function called");
-            int row = 0;
-            for(int i = 0; i < numberOfFiles; i++)
+            //print("foreach function called");
+
+            //foreach (FileInfo f in info)
+            foreach(DirectoryInfo f in allFiles)
             {
-                transformPoint.transform.position = new Vector3(transformPoint.transform.position.x + i * xSpacing, transformPoint.transform.position.y + row * ySpacing);
-
-                newObj = Instantiate(buttonPrefab, transformPoint.transform);
-                //newObj.GetComponent<Image>().color = Random.ColorHSV();
-                newObj.GetComponentInChildren<Text>().text = f.Name;
-
-                fileNames.Add(f.ToString());
-                print(f.Name);
-
-                if (i == filesPerRow - 1)
+                //for (int i = 0; i < numberOfFiles; i++)
                 {
+                    // Set the transform of where each prefab should be instantiated
+                    fileStart.transform.position = new Vector3((column * xSpacing), (row * ySpacing), 0);
+
+                    //print("Y Spacing is now: " + (row * ySpacing));
+
+
+                    // Instantiate the newObj at the designated transform
+                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+                    newObj.transform.parent = content.transform;
+                    //newObj.GetComponent<Image>().color = Random.ColorHSV();
+
+                    // The text of the newObj should be the file name
+                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+
+                    fileNames.Add(f.ToString());
+                    print(f.Name);
+
                     row++;
-                    //i = 0;
+
+                    /*if (i == filesPerRow - 1)
+                    {
+                        row++;
+                        column = 0;
+                        //i = 0;
+                    }*/
                 }
             }
+            
 
             
         }
