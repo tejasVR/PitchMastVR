@@ -6,6 +6,8 @@ public class DrawLineManager : MonoBehaviour {
 
     // Use this for initialization
 
+    public static DrawLineManager Instance;
+
     // The MeshRenderer Lines created on draw
     public MeshLineRenderer currLine;
     public MeshLineRenderer currLine1;
@@ -36,6 +38,12 @@ public class DrawLineManager : MonoBehaviour {
 
     public GameObject cursor;
 
+    public bool isDrawing;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void DrawInitialize()
     {
@@ -56,16 +64,18 @@ public class DrawLineManager : MonoBehaviour {
 
     public void DrawLine(Vector3 screenPoint)
     {
+        isDrawing = true;
         cursor.transform.position = screenPoint;//Vector3.Lerp(cursor.transform.position, screenPoint, Time.deltaTime * 2f);
         currLine.AddPoint(sphereHigh.position, sphereLow.position);
         numClicks++;
     }
 
-    public void DrawStop(Vector3 controllerPosition)
+    public void DrawStop(Vector3 controllerPosition, GameObject slideToSave)
     {
+        isDrawing = false;
         cursor.transform.position = controllerPosition;
         numClicks = 0;
-        //currLine.transform.SetParent(meshparent);
+        currLine.transform.SetParent(slideToSave.transform);
         currLine = null;
     }
 }

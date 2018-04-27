@@ -10,7 +10,7 @@ public class ControllerManager : MonoBehaviour {
 
 
     public LaserPointer laserPointer;
-    public DrawLineManager dLine;
+    DrawLineManager drawLineManager;
     public PresentationManager presentationManager;
 
     public bool fileBrowserOpen;
@@ -24,7 +24,7 @@ public class ControllerManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         //laserPointer.LaserOff();
-
+        drawLineManager = DrawLineManager.Instance;
         vrFileBrowser = VRFileBrowser.Instance;
 	}
 	
@@ -73,7 +73,7 @@ public class ControllerManager : MonoBehaviour {
 
                 if (laserPointer.collidingWithScreen)
                 {
-                    dLine.DrawInitialize();
+                    drawLineManager.DrawInitialize();
                 }
             }
 
@@ -81,7 +81,7 @@ public class ControllerManager : MonoBehaviour {
             {
                 if (laserPointer.collidingWithScreen)
                 {
-                    dLine.DrawLine(screenHitPoint);
+                    drawLineManager.DrawLine(screenHitPoint);
                 }
             }
 
@@ -89,7 +89,7 @@ public class ControllerManager : MonoBehaviour {
             {
                 laserPointer.LaserOff();
 
-                dLine.DrawStop(transform.position);
+                drawLineManager.DrawStop(transform.position, presentationManager.SaveDraw());
             }
         }
         

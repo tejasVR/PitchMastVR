@@ -17,13 +17,17 @@ public class PresentationManager : MonoBehaviour {
     private SteamVR_Controller.Device device;
     public Vector2 touchpad; // links Vive touchpad to Vector2
 
+    DrawLineManager drawLineManager;
+
     //public int totalNumberOfSlides;
 
     public RawImage currentSlide;
     public int slideNumber = 0;
     public Texture2D[] slides;
+    public GameObject[] slidesToDraw;
 
     public string explorerPDFPath;
+
 
     // The local path within the Unity project where a presentations' images are stored
     public static string presentationLocalImagesPath;
@@ -36,12 +40,16 @@ public class PresentationManager : MonoBehaviour {
     void Start () {
         //CollectImages();
         //slides = new Texture[totalNumberOfSlides];
-
+        drawLineManager = DrawLineManager.Instance;
         // Set the starting slide as the first slides in the slides array
+        slidesToDraw = new GameObject[slides.Length];
+
+    }
+
+    void Update () {
+
         
-	}
-	
-	void Update () {
+
 
         // Update the Steam VR controllers every frame
         /*if (trackedObj.gameObject.activeInHierarchy)
@@ -81,6 +89,25 @@ public class PresentationManager : MonoBehaviour {
 
     }
 
+    public GameObject SaveDraw()
+    {
+        GameObject slideDrawSpace;
+
+        if (slidesToDraw[slideNumber] != null)
+        {
+            return slidesToDraw[slideNumber].gameObject;
+
+        }else
+        {
+            slideDrawSpace = new GameObject("Slide " + slideNumber + " Draw Space");
+            slidesToDraw[slideNumber] = slideDrawSpace;
+            return slidesToDraw[slideNumber].gameObject;
+
+        }
+        //if(slidesToDraw[slideNumber])
+
+    }
+
     public void PresentImages()
     {
         print("Presentation Local Images Path: " + presentationLocalImagesPath);
@@ -88,6 +115,7 @@ public class PresentationManager : MonoBehaviour {
 
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
         slides = Resources.LoadAll<Texture2D>(presentationLocalImagesPath);
+        slidesToDraw = new GameObject[slides.Length];
         slideNumber = 0;
         currentSlide.GetComponent<RawImage>().texture = slides[0];
 
