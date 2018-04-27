@@ -99,7 +99,7 @@ public class PresentationManager : MonoBehaviour {
 
         }else
         {
-            slideDrawSpace = new GameObject("Slide " + slideNumber + " Draw Space");
+            slideDrawSpace = new GameObject(slideNumber + "_draw");
             slidesToDraw[slideNumber] = slideDrawSpace;
             return slidesToDraw[slideNumber].gameObject;
 
@@ -192,6 +192,16 @@ public class PresentationManager : MonoBehaviour {
 
         // change the current slide image to reflect new slide
         currentSlide.GetComponent<RawImage>().texture = slides[slideNumber];
+
+        /*foreach(GameObject s in slidesToDraw)
+        {
+            s.SetActive(false);
+        }
+
+        slidesToDraw[slideNumber].SetActive(true);
+
+    */
+
     }
 
     public void SlideNext()
@@ -207,6 +217,19 @@ public class PresentationManager : MonoBehaviour {
 
         // change the current slide image to reflect new slide
         currentSlide.GetComponent<RawImage>().texture = slides[slideNumber];
+
+        foreach (GameObject s in slidesToDraw)
+        {
+            if (s != null)
+            {
+                s.SetActive(false);
+            }
+        }
+
+        if (slidesToDraw[slideNumber] != null)
+        {
+            slidesToDraw[slideNumber].SetActive(true);
+        }
     }
 
     public static void GetPresentionPath(string presentationPath)
