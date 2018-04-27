@@ -48,6 +48,8 @@ public class VRFileBrowser : MonoBehaviour {
 
     public Transform fileStart;
 
+    public bool directoryOpen;
+
 
 
 
@@ -71,7 +73,10 @@ public class VRFileBrowser : MonoBehaviour {
 
 
         // Define beginning path as the overhead project folder
-        defaultPath = "C:/Users/";
+        if (defaultPath == null)
+        {
+            defaultPath = "C:/Users/";
+        }
         presentationManager = PresentationManager.Instance;
         // Show the directory on start
         //ShowFullDirectory(defaultPath);
@@ -124,111 +129,109 @@ public class VRFileBrowser : MonoBehaviour {
             presentationManager.GetNewPDF(path);
             HideDirectory();
         }
-
-
-        // Create an array of FileInfo based on all the files in the DirectoryInfo
-        FileInfo[] files = dir.GetFiles("*.pdf");
-        DirectoryInfo[] folders = dir.GetDirectories("*");
-
-        // Count the number of files/folders in FileInfo
-        /*foreach (FileInfo f in info)
+        else
         {
-            numberOfFiles++;
-        }*/
+            directoryOpen = true;
 
-        int row = 0;
-        int column = 0;
-        //foreach (FileInfo f in info)
-        {
-            //print("foreach function called");
+            // Create an array of FileInfo based on all the files in the DirectoryInfo
+            FileInfo[] files = dir.GetFiles("*.pdf");
+            DirectoryInfo[] folders = dir.GetDirectories("*");
 
+            // Count the number of files/folders in FileInfo
+            /*foreach (FileInfo f in info)
+            {
+                numberOfFiles++;
+            }*/
+
+            int row = 0;
+            int column = 0;
             //foreach (FileInfo f in info)
-            foreach(DirectoryInfo f in folders)
             {
-                //for (int i = 0; i < numberOfFiles; i++)
+                //print("foreach function called");
+
+                //foreach (FileInfo f in info)
+                foreach (DirectoryInfo f in folders)
                 {
-                    //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
-
-
-                    // Set the transform of where each prefab should be instantiated
-                    fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
-                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
-                    objectList.Add(newObj);
-
-                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
-
-                    //newObj.transform.position = fileStart.transform.position;
-                    //print("Y Spacing is now: " + (row * ySpacing));
-
-
-                    // Instantiate the newObj at the designated transform
-                    newObj.transform.parent = content.transform;
-                    //newObj.GetComponent<Image>().color = Random.ColorHSV();
-
-                    // The text of the newObj should be the file name
-
-                    //fileNames.Add(f.ToString());
-                    //print(f.Name);
-
-                    newObj.GetComponent<FileButton>().filePath = f.FullName;
-                    row++;
-
-                    if (row == filesPerRow)
+                    //for (int i = 0; i < numberOfFiles; i++)
                     {
-                        row = 0;
-                        column++;
-                        //i = 0;
+                        //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
+
+
+                        // Set the transform of where each prefab should be instantiated
+                        fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+                        newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+                        objectList.Add(newObj);
+
+                        newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+
+                        //newObj.transform.position = fileStart.transform.position;
+                        //print("Y Spacing is now: " + (row * ySpacing));
+
+
+                        // Instantiate the newObj at the designated transform
+                        newObj.transform.parent = content.transform;
+                        //newObj.GetComponent<Image>().color = Random.ColorHSV();
+
+                        // The text of the newObj should be the file name
+
+                        //fileNames.Add(f.ToString());
+                        //print(f.Name);
+
+                        newObj.GetComponent<FileButton>().filePath = f.FullName;
+                        row++;
+
+                        if (row == filesPerRow)
+                        {
+                            row = 0;
+                            column++;
+                            //i = 0;
+                        }
+                    }
+                }
+
+                foreach (FileInfo f in files)
+                {
+                    //for (int i = 0; i < numberOfFiles; i++)
+                    {
+                        //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
+
+                        // Set the transform of where each prefab should be instantiated
+                        fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+                        newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+                        objectList.Add(newObj);
+
+                        newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+
+                        //newObj.transform.position = fileStart.transform.position;
+
+                        //print("Y Spacing is now: " + (row * ySpacing));
+
+                        // Instantiate the newObj at the designated transform
+                        newObj.transform.parent = content.transform;
+                        //newObj.GetComponent<Image>().color = Random.ColorHSV();
+
+                        // The text of the newObj should be the file name
+                        //objectToSpawn.GetComponentInChildren<TextMeshPro>().text = f.Name;
+
+                        //fileNames.Add(f.ToString());
+
+                        newObj.GetComponent<FileButton>().filePath = f.FullName;
+
+
+                        // FileInfo.FullName == the full directory path to that file
+                        //print(f.FullName);
+
+                        row++;
+
+                        if (row == filesPerRow)
+                        {
+                            row = 0;
+                            column++;
+                            //i = 0;
+                        }
                     }
                 }
             }
-
-            foreach (FileInfo f in files)
-            {
-                //for (int i = 0; i < numberOfFiles; i++)
-                {
-                    //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
-
-                    // Set the transform of where each prefab should be instantiated
-                    fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
-                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
-                    objectList.Add(newObj);
-
-                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
-
-                    //newObj.transform.position = fileStart.transform.position;
-
-                    //print("Y Spacing is now: " + (row * ySpacing));
-
-                    // Instantiate the newObj at the designated transform
-                    newObj.transform.parent = content.transform;
-                    //newObj.GetComponent<Image>().color = Random.ColorHSV();
-
-                    // The text of the newObj should be the file name
-                    //objectToSpawn.GetComponentInChildren<TextMeshPro>().text = f.Name;
-
-                    //fileNames.Add(f.ToString());
-
-                    newObj.GetComponent<FileButton>().filePath = f.FullName;
-
-
-                    // FileInfo.FullName == the full directory path to that file
-                    //print(f.FullName);
-
-                    row++;
-
-                    if (row == filesPerRow)
-                    {
-                        row = 0;
-                        column++;
-                        //i = 0;
-                    }
-                }
-            }
-
-
-
-
-
         }
     }
 
@@ -238,5 +241,7 @@ public class VRFileBrowser : MonoBehaviour {
         {
             Destroy(obj.gameObject);
         }
+
+        directoryOpen = false;
     }
 }
