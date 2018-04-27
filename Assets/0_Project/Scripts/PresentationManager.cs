@@ -24,7 +24,10 @@ public class PresentationManager : MonoBehaviour {
     public RawImage currentSlide;
     public int slideNumber = 0;
     public Texture2D[] slides;
+    //public List<GameObject> slidesToDraw = new List<GameObject>();
     public GameObject[] slidesToDraw;
+
+    public Transform slideDrawParent;
 
     public string explorerPDFPath;
 
@@ -43,6 +46,7 @@ public class PresentationManager : MonoBehaviour {
         drawLineManager = DrawLineManager.Instance;
         // Set the starting slide as the first slides in the slides array
         slidesToDraw = new GameObject[slides.Length];
+        //print("slideToDraw is now " + slidesToDraw.Count);
 
     }
 
@@ -100,6 +104,7 @@ public class PresentationManager : MonoBehaviour {
         }else
         {
             slideDrawSpace = new GameObject(slideNumber + "_draw");
+            slideDrawSpace.transform.parent = slideDrawParent;
             slidesToDraw[slideNumber] = slideDrawSpace;
             return slidesToDraw[slideNumber].gameObject;
 
@@ -115,6 +120,13 @@ public class PresentationManager : MonoBehaviour {
 
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
         slides = Resources.LoadAll<Texture2D>(presentationLocalImagesPath);
+        foreach (GameObject s in slidesToDraw)
+        {
+            if (s != null)
+            {
+                Destroy(s);
+            }
+        }
         slidesToDraw = new GameObject[slides.Length];
         slideNumber = 0;
         currentSlide.GetComponent<RawImage>().texture = slides[0];
@@ -193,15 +205,7 @@ public class PresentationManager : MonoBehaviour {
         // change the current slide image to reflect new slide
         currentSlide.GetComponent<RawImage>().texture = slides[slideNumber];
 
-        /*foreach(GameObject s in slidesToDraw)
-        {
-            s.SetActive(false);
-        }
-
-        slidesToDraw[slideNumber].SetActive(true);
-
-    */
-
+        CheckForSlideDrawing();
     }
 
     public void SlideNext()
@@ -218,6 +222,17 @@ public class PresentationManager : MonoBehaviour {
         // change the current slide image to reflect new slide
         currentSlide.GetComponent<RawImage>().texture = slides[slideNumber];
 
+        CheckForSlideDrawing();
+    }
+
+    public static void GetPresentionPath(string presentationPath)
+    {
+        presentationLocalImagesPath = presentationPath;
+        //print("Presentation Local Images Path: " + presentationLocalImagesPath);
+    }
+
+    public void CheckForSlideDrawing()
+    {
         foreach (GameObject s in slidesToDraw)
         {
             if (s != null)
@@ -230,11 +245,5 @@ public class PresentationManager : MonoBehaviour {
         {
             slidesToDraw[slideNumber].SetActive(true);
         }
-    }
-
-    public static void GetPresentionPath(string presentationPath)
-    {
-        presentationLocalImagesPath = presentationPath;
-        //print("Presentation Local Images Path: " + presentationLocalImagesPath);
     }
 }
