@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class PresentationManager : MonoBehaviour {
 
+    public static PresentationManager Instance;
+
     //public static PDFConvert pdfConvert;
     // Basic tracking for Vive wands
     public SteamVR_TrackedObject trackedObj;
@@ -26,7 +28,12 @@ public class PresentationManager : MonoBehaviour {
     // The local path within the Unity project where a presentations' images are stored
     public static string presentationLocalImagesPath;
 
-	void Start () {
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    void Start () {
         //CollectImages();
         //slides = new Texture[totalNumberOfSlides];
 
@@ -37,7 +44,7 @@ public class PresentationManager : MonoBehaviour {
 	void Update () {
 
         // Update the Steam VR controllers every frame
-        if (trackedObj.gameObject.activeInHierarchy)
+        /*if (trackedObj.gameObject.activeInHierarchy)
         {
             device = SteamVR_Controller.Input((int)trackedObj.index);
 
@@ -65,9 +72,9 @@ public class PresentationManager : MonoBehaviour {
 
             if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
             {
-                OpenExplorer();
+                //OpenExplorer();
             }
-        }
+        }*/
 
         // if we are touching the touchpad, get the coordinates of the Vector2
         

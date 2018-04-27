@@ -18,10 +18,14 @@ public class ControllerManager : MonoBehaviour {
     // For Drawing on screen
     public Vector3 screenHitPoint;
 
+    VRFileBrowser vrFileBrowser;
+
 
     // Use this for initialization
     void Start () {
         //laserPointer.LaserOff();
+
+        vrFileBrowser = VRFileBrowser.Instance;
 	}
 	
 	// Update is called once per frame
@@ -57,7 +61,8 @@ public class ControllerManager : MonoBehaviour {
 
             if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
             {
-                presentationManager.OpenExplorer();
+                //presentationManager.OpenExplorer();
+                vrFileBrowser.ShowFullDirectory(vrFileBrowser.defaultPath);
             }
 
 

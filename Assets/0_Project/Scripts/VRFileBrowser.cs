@@ -15,18 +15,28 @@ public class VRFileBrowser : MonoBehaviour {
         public int size;
     }
 
+    #region Singelon
+    public static VRFileBrowser Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+    #endregion
+
     public SteamVR_TrackedObject trackedObj;
     private SteamVR_Controller.Device device;
     public Vector2 touchpad;
 
     public ScrollRect scrollRect;
-
+    PresentationManager presentationManager;
    
 
     public Dictionary<string, Queue<GameObject>> poolDictionary;
 
-    public string myPath;
+    public string defaultPath;
     public List<Pool> fileNamesList = new List<Pool>();
+
+    public List<GameObject> objectList = new List<GameObject>();
     public int fileNameNumber;
     public int numberOfFiles;
     public GameObject content;
@@ -39,11 +49,13 @@ public class VRFileBrowser : MonoBehaviour {
     public Transform fileStart;
 
 
+
+
 	// Use this for initialization
 	void Start () {
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        //poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
-        foreach(Pool file in fileNamesList)
+        /*foreach(Pool file in fileNamesList)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
 
@@ -55,14 +67,14 @@ public class VRFileBrowser : MonoBehaviour {
             }
 
             poolDictionary.Add(file.tag, objectPool);
-        }
+        }*/
 
 
         // Define beginning path as the overhead project folder
-        myPath = Application.dataPath + "/0_Project";
-
+        defaultPath = "C:/Users/";
+        presentationManager = PresentationManager.Instance;
         // Show the directory on start
-        ShowFullDirectory();
+        //ShowFullDirectory(defaultPath);
 
     }
 	
@@ -89,20 +101,33 @@ public class VRFileBrowser : MonoBehaviour {
 	}
 
 
-    public void ShowFullDirectory()
+    public void ShowFullDirectory(string path)
     {
         // Create a new object called newObj
         GameObject newObj;
+        //print("destroying current objects");
+        HideDirectory();
+
+        
+
         //objectToSpawn.SetActive(true);
         //objectToSpawn
         // Print myPath so we know that we are viewing the correct directory
         //print("My Path Dir: " + myPath);
 
         // Create a DirectoryInfo object linked to myPath
-        DirectoryInfo dir = new DirectoryInfo(myPath);
+        //print("getting new path");
+        DirectoryInfo dir = new DirectoryInfo(path);
+
+        if (dir.Extension == ".pdf")
+        {
+            presentationManager.GetNewPDF(path);
+            HideDirectory();
+        }
+
 
         // Create an array of FileInfo based on all the files in the DirectoryInfo
-        FileInfo[] files = dir.GetFiles("*");
+        FileInfo[] files = dir.GetFiles("*.pdf");
         DirectoryInfo[] folders = dir.GetDirectories("*");
 
         // Count the number of files/folders in FileInfo
@@ -126,8 +151,9 @@ public class VRFileBrowser : MonoBehaviour {
 
 
                     // Set the transform of where each prefab should be instantiated
-                    fileStart.transform.position = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+                    fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
                     newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+                    objectList.Add(newObj);
 
                     newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
 
@@ -144,6 +170,7 @@ public class VRFileBrowser : MonoBehaviour {
                     //fileNames.Add(f.ToString());
                     //print(f.Name);
 
+                    newObj.GetComponent<FileButton>().filePath = f.FullName;
                     row++;
 
                     if (row == filesPerRow)
@@ -159,11 +186,12 @@ public class VRFileBrowser : MonoBehaviour {
             {
                 //for (int i = 0; i < numberOfFiles; i++)
                 {
-                    GameObject objectToSpawn = poolDictionary["file"].Dequeue();
+                    //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
 
                     // Set the transform of where each prefab should be instantiated
-                    fileStart.transform.position = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+                    fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
                     newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+                    objectList.Add(newObj);
 
                     newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
 
@@ -171,9 +199,8 @@ public class VRFileBrowser : MonoBehaviour {
 
                     //print("Y Spacing is now: " + (row * ySpacing));
 
-
                     // Instantiate the newObj at the designated transform
-                    objectToSpawn.transform.parent = content.transform;
+                    newObj.transform.parent = content.transform;
                     //newObj.GetComponent<Image>().color = Random.ColorHSV();
 
                     // The text of the newObj should be the file name
@@ -181,8 +208,11 @@ public class VRFileBrowser : MonoBehaviour {
 
                     //fileNames.Add(f.ToString());
 
+                    newObj.GetComponent<FileButton>().filePath = f.FullName;
+
+
                     // FileInfo.FullName == the full directory path to that file
-                    print(f.FullName);
+                    //print(f.FullName);
 
                     row++;
 
@@ -199,6 +229,14 @@ public class VRFileBrowser : MonoBehaviour {
 
 
 
+        }
+    }
+
+    public void HideDirectory()
+    {
+        foreach (GameObject obj in objectList)
+        {
+            Destroy(obj.gameObject);
         }
     }
 }
