@@ -1,5 +1,4 @@
-﻿using SimpleFileBrowser;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -137,7 +136,7 @@ public class PresentationManager : MonoBehaviour {
 
     }
 
-    public void OpenExplorer()
+    /*public void OpenExplorer()
     {
         // Sets filters for file browser
         FileBrowser.SetFilters(true, new FileBrowser.Filter("PDF", ".pdf"));
@@ -162,20 +161,21 @@ public class PresentationManager : MonoBehaviour {
 
 
 
-        /*
-        explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "", "pdf");
-        GetNewPDF();
-        */
+        
+        //explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "", "pdf");
+        //GetNewPDF();
+        
 
         StartCoroutine(ShowLoadDialog());
-    }
+    }*/
 
+    /*
     IEnumerator ShowLoadDialog()
     {
         yield return FileBrowser.WaitForLoadDialog(false, null, "Load PDF", "Load");
         print("showing load dialog");
         GetNewPDF(FileBrowser.Result);
-    }
+    }*/
 
     public void GetNewPDF(string getPDFPath)
     {
