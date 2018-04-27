@@ -7,15 +7,26 @@ using TMPro;
 
 public class VRFileBrowser : MonoBehaviour {
 
+    [System.Serializable]
+    public class Pool
+    {
+        public string tag;
+        public GameObject prefab;
+        public int size;
+    }
+
     public SteamVR_TrackedObject trackedObj;
     private SteamVR_Controller.Device device;
     public Vector2 touchpad;
 
     public ScrollRect scrollRect;
 
+   
 
-    string myPath;
-    public List<string> fileNames = new List<string>();
+    public Dictionary<string, Queue<GameObject>> poolDictionary;
+
+    public string myPath;
+    public List<Pool> fileNamesList = new List<Pool>();
     public int fileNameNumber;
     public int numberOfFiles;
     public GameObject content;
@@ -30,6 +41,23 @@ public class VRFileBrowser : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+
+        foreach(Pool file in fileNamesList)
+        {
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+
+            for(int  i = 0; i < file.size; i++)
+            {
+                GameObject obj = Instantiate(file.prefab, content.transform);
+                obj.SetActive(false);
+                objectPool.Enqueue(obj);
+            }
+
+            poolDictionary.Add(file.tag, objectPool);
+        }
+
+
         // Define beginning path as the overhead project folder
         myPath = Application.dataPath + "/0_Project";
 
@@ -65,7 +93,8 @@ public class VRFileBrowser : MonoBehaviour {
     {
         // Create a new object called newObj
         GameObject newObj;
-
+        //objectToSpawn.SetActive(true);
+        //objectToSpawn
         // Print myPath so we know that we are viewing the correct directory
         //print("My Path Dir: " + myPath);
 
@@ -93,21 +122,26 @@ public class VRFileBrowser : MonoBehaviour {
             {
                 //for (int i = 0; i < numberOfFiles; i++)
                 {
+                    //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
+
+
                     // Set the transform of where each prefab should be instantiated
                     fileStart.transform.position = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
 
+                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+
+                    //newObj.transform.position = fileStart.transform.position;
                     //print("Y Spacing is now: " + (row * ySpacing));
 
 
                     // Instantiate the newObj at the designated transform
-                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
                     newObj.transform.parent = content.transform;
                     //newObj.GetComponent<Image>().color = Random.ColorHSV();
 
                     // The text of the newObj should be the file name
-                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
 
-                    fileNames.Add(f.ToString());
+                    //fileNames.Add(f.ToString());
                     //print(f.Name);
 
                     row++;
@@ -125,21 +159,27 @@ public class VRFileBrowser : MonoBehaviour {
             {
                 //for (int i = 0; i < numberOfFiles; i++)
                 {
+                    GameObject objectToSpawn = poolDictionary["file"].Dequeue();
+
                     // Set the transform of where each prefab should be instantiated
                     fileStart.transform.position = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+
+                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+
+                    //newObj.transform.position = fileStart.transform.position;
 
                     //print("Y Spacing is now: " + (row * ySpacing));
 
 
                     // Instantiate the newObj at the designated transform
-                    newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
-                    newObj.transform.parent = content.transform;
+                    objectToSpawn.transform.parent = content.transform;
                     //newObj.GetComponent<Image>().color = Random.ColorHSV();
 
                     // The text of the newObj should be the file name
-                    newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+                    //objectToSpawn.GetComponentInChildren<TextMeshPro>().text = f.Name;
 
-                    fileNames.Add(f.ToString());
+                    //fileNames.Add(f.ToString());
 
                     // FileInfo.FullName == the full directory path to that file
                     print(f.FullName);
