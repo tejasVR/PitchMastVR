@@ -5,15 +5,11 @@ using System.IO;
 using UnityEngine.UI;
 using TMPro;
 
+/*
+ * This class creates a 3D file browser for the user to search through through PC directory, and select a file they want to open
+ * 
+ */
 public class VRFileBrowser : MonoBehaviour {
-
-    [System.Serializable]
-    public class Pool
-    {
-        public string tag;
-        public GameObject prefab;
-        public int size;
-    }
 
     #region Singelon
     public static VRFileBrowser Instance;
@@ -23,107 +19,48 @@ public class VRFileBrowser : MonoBehaviour {
     }
     #endregion
 
-    public SteamVR_TrackedObject trackedObj;
-    private SteamVR_Controller.Device device;
-    public Vector2 touchpad;
-
-    public ScrollRect scrollRect;
+    #region Class Variables
     PresentationManager presentationManager;
-   
 
-    public Dictionary<string, Queue<GameObject>> poolDictionary;
+    // Creates a list of button objects to track when the VR browser is open
+    public List<GameObject> objectList = new List<GameObject>();
+
 
     public string defaultPath;
-    public List<Pool> fileNamesList = new List<Pool>();
-
-    public List<GameObject> objectList = new List<GameObject>();
     public int fileNameNumber;
     public int numberOfFiles;
     public GameObject content;
     public GameObject buttonPrefab;
 
+    // For spacing of how each button in the VR browser is laid out
     public int filesPerRow;
     public float xSpacing;
     public float ySpacing;
-
     public Transform fileStart;
 
     public bool directoryOpen;
+    #endregion
 
-
-
-
-	// Use this for initialization
-	void Start () {
-        //poolDictionary = new Dictionary<string, Queue<GameObject>>();
-
-        /*foreach(Pool file in fileNamesList)
-        {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
-
-            for(int  i = 0; i < file.size; i++)
-            {
-                GameObject obj = Instantiate(file.prefab, content.transform);
-                obj.SetActive(false);
-                objectPool.Enqueue(obj);
-            }
-
-            poolDictionary.Add(file.tag, objectPool);
-        }*/
-
-
+    void Start () {
         // Define beginning path as the overhead project folder
         if (defaultPath == null)
         {
             defaultPath = "C:/Users/";
         }
-        presentationManager = PresentationManager.Instance;
-        // Show the directory on start
-        //ShowFullDirectory(defaultPath);
 
+        presentationManager = PresentationManager.Instance;
     }
 	
-	// Update is called once per frame
-	void Update () {
-
-        if (trackedObj.gameObject.activeInHierarchy)
-        {
-            device = SteamVR_Controller.Input((int)trackedObj.index);
-
-            touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
-
-            /*if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y > 0)
-            {
-                scrollRect.verticalNormalizedPosition = 1f;
-            }
-
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && touchpad.y < 0)
-            {
-                scrollRect.verticalNormalizedPosition = 0f;
-            }*/
-        }
-		
-	}
-
-
     public void ShowFullDirectory(string path)
     {
-        // Create a new object called newObj
+        //Sets up new objects and default path to grab files/folders
         GameObject newObj;
-        //print("destroying current objects");
         HideDirectory();
 
-        
-
-        //objectToSpawn.SetActive(true);
-        //objectToSpawn
-        // Print myPath so we know that we are viewing the correct directory
-        //print("My Path Dir: " + myPath);
-
-        // Create a DirectoryInfo object linked to myPath
-        //print("getting new path");
+        // Create a DirectoryInfo variable linked to the path of an external directory
         DirectoryInfo dir = new DirectoryInfo(path);
 
+        // If the path is already a ".pdf" file, skip creating the 3D browser, and lets convert the file into a presentation
         if (dir.Extension == ".pdf")
         {
             presentationManager.GetNewPDF(path);
@@ -137,57 +74,32 @@ public class VRFileBrowser : MonoBehaviour {
             FileInfo[] files = dir.GetFiles("*.pdf");
             DirectoryInfo[] folders = dir.GetDirectories("*");
 
-            // Count the number of files/folders in FileInfo
-            /*foreach (FileInfo f in info)
-            {
-                numberOfFiles++;
-            }*/
-
+            // Initialize the row and column count for the VR browser          
             int row = 0;
             int column = 0;
-            //foreach (FileInfo f in info)
+         
+            // Lets grab all the folders in the directory and assigna clickable button to that directory path
+            foreach (DirectoryInfo f in folders)
             {
-                //print("foreach function called");
+                // Place the first button according to the row and column count
+                fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
 
-                //foreach (FileInfo f in info)
-                foreach (DirectoryInfo f in folders)
+                // Assign a newObj to the button placement, add it to a list, assign its text as the path of that button, and stick it to a content parent object
+                newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+                objectList.Add(newObj);
+                newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
+                newObj.GetComponent<FileButton>().filePath = f.FullName;
+                newObj.transform.parent = content.transform;
+               
+                row++;
+
+                if (row == filesPerRow)
                 {
-                    //for (int i = 0; i < numberOfFiles; i++)
-                    {
-                        //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
-
-
-                        // Set the transform of where each prefab should be instantiated
-                        fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
-                        newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
-                        objectList.Add(newObj);
-
-                        newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
-
-                        //newObj.transform.position = fileStart.transform.position;
-                        //print("Y Spacing is now: " + (row * ySpacing));
-
-
-                        // Instantiate the newObj at the designated transform
-                        newObj.transform.parent = content.transform;
-                        //newObj.GetComponent<Image>().color = Random.ColorHSV();
-
-                        // The text of the newObj should be the file name
-
-                        //fileNames.Add(f.ToString());
-                        //print(f.Name);
-
-                        newObj.GetComponent<FileButton>().filePath = f.FullName;
-                        row++;
-
-                        if (row == filesPerRow)
-                        {
-                            row = 0;
-                            column++;
-                            //i = 0;
-                        }
-                    }
+                    row = 0;
+                    column++;
                 }
+                
+            }
 
                 foreach (FileInfo f in files)
                 {
