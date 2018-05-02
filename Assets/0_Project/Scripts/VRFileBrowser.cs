@@ -11,7 +11,7 @@ using TMPro;
  */
 public class VRFileBrowser : MonoBehaviour {
 
-    #region Singelon
+    #region SINGLETON
     public static VRFileBrowser Instance;
     private void Awake()
     {
@@ -19,12 +19,11 @@ public class VRFileBrowser : MonoBehaviour {
     }
     #endregion
 
-    #region Class Variables
+    #region VARIABLES
     PresentationManager presentationManager;
 
     // Creates a list of button objects to track when the VR browser is open
     public List<GameObject> objectList = new List<GameObject>();
-
 
     public string defaultPath;
     public int fileNameNumber;
@@ -50,7 +49,8 @@ public class VRFileBrowser : MonoBehaviour {
 
         presentationManager = PresentationManager.Instance;
     }
-	
+
+    #region FUNCTIONS
     public void ShowFullDirectory(string path)
     {
         HideDirectory();
@@ -89,7 +89,6 @@ public class VRFileBrowser : MonoBehaviour {
                     row = 0;
                     column++;
                 }
-                
             }
 
             // Lets grab all the FILES in the directory and assign a clickable button to that directory path
@@ -103,10 +102,8 @@ public class VRFileBrowser : MonoBehaviour {
                 {
                     row = 0;
                     column++;
-                    //i = 0;
                 }
             }
-                
         }   
     }
 
@@ -122,7 +119,9 @@ public class VRFileBrowser : MonoBehaviour {
 
     public void PlaceButton(int row, int column, string fileName, string filePath)
     {
+        // Create an empty button object to use
         GameObject button;
+
         // Place the first button according to the row and column count
         fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
 
@@ -133,4 +132,5 @@ public class VRFileBrowser : MonoBehaviour {
         button.GetComponent<FileButton>().filePath = filePath;
         button.transform.parent = content.transform;
     }
+    #endregion
 }

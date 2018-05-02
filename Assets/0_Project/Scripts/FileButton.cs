@@ -20,16 +20,20 @@ public class FileButton : MonoBehaviour {
 		
 	}
 
+    // If the button is in contact with a controller, turn yellow
     private void OnTriggerEnter(Collider other)
     {
-        print("On TRigger Enter!");
-        rend.material.color = Color.yellow;
+        if (other.gameObject.tag == "Controller")
+        {
+            rend.material.color = Color.yellow;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        print("On TRigger Exit!");
-
-        fileBrowser.ShowFullDirectory(filePath);
+        if (other.gameObject.tag == "Controller")
+        {
+            fileBrowser.ShowFullDirectory(filePath);
+        }
     }
 }
