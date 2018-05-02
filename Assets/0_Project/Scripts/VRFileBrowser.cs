@@ -53,8 +53,6 @@ public class VRFileBrowser : MonoBehaviour {
 	
     public void ShowFullDirectory(string path)
     {
-        //Sets up new objects and default path to grab files/folders
-        GameObject newObj;
         HideDirectory();
 
         // Create a DirectoryInfo variable linked to the path of an external directory
@@ -78,21 +76,14 @@ public class VRFileBrowser : MonoBehaviour {
             int row = 0;
             int column = 0;
          
-            // Lets grab all the folders in the directory and assigna clickable button to that directory path
+            // Lets grab all the FOLDERS in the directory and assign a clickable button to that directory path
             foreach (DirectoryInfo f in folders)
             {
-                // Place the first button according to the row and column count
-                fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
-
-                // Assign a newObj to the button placement, add it to a list, assign its text as the path of that button, and stick it to a content parent object
-                newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
-                objectList.Add(newObj);
-                newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
-                newObj.GetComponent<FileButton>().filePath = f.FullName;
-                newObj.transform.parent = content.transform;
+                PlaceButton(row, column, f.Name, f.FullName);
                
                 row++;
 
+                // If there are too many buttons in a row, start a new column
                 if (row == filesPerRow)
                 {
                     row = 0;
@@ -101,50 +92,22 @@ public class VRFileBrowser : MonoBehaviour {
                 
             }
 
-                foreach (FileInfo f in files)
+            // Lets grab all the FILES in the directory and assign a clickable button to that directory path
+            foreach (FileInfo f in files)
+            {
+                PlaceButton(row, column, f.Name, f.FullName);
+
+                row++;
+
+                if (row == filesPerRow)
                 {
-                    //for (int i = 0; i < numberOfFiles; i++)
-                    {
-                        //GameObject objectToSpawn = poolDictionary["file"].Dequeue();
-
-                        // Set the transform of where each prefab should be instantiated
-                        fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
-                        newObj = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
-                        objectList.Add(newObj);
-
-                        newObj.GetComponentInChildren<TextMeshPro>().text = f.Name;
-
-                        //newObj.transform.position = fileStart.transform.position;
-
-                        //print("Y Spacing is now: " + (row * ySpacing));
-
-                        // Instantiate the newObj at the designated transform
-                        newObj.transform.parent = content.transform;
-                        //newObj.GetComponent<Image>().color = Random.ColorHSV();
-
-                        // The text of the newObj should be the file name
-                        //objectToSpawn.GetComponentInChildren<TextMeshPro>().text = f.Name;
-
-                        //fileNames.Add(f.ToString());
-
-                        newObj.GetComponent<FileButton>().filePath = f.FullName;
-
-
-                        // FileInfo.FullName == the full directory path to that file
-                        //print(f.FullName);
-
-                        row++;
-
-                        if (row == filesPerRow)
-                        {
-                            row = 0;
-                            column++;
-                            //i = 0;
-                        }
-                    }
+                    row = 0;
+                    column++;
+                    //i = 0;
                 }
             }
-        }
+                
+        }   
     }
 
     public void HideDirectory()
@@ -155,5 +118,19 @@ public class VRFileBrowser : MonoBehaviour {
         }
 
         directoryOpen = false;
+    }
+
+    public void PlaceButton(int row, int column, string fileName, string filePath)
+    {
+        GameObject button;
+        // Place the first button according to the row and column count
+        fileStart.transform.localPosition = new Vector3((column * xSpacing), -(row * ySpacing), 0);
+
+        // Assign a newObj to the button placement, add it to a list, assign its text as the path of that button, and stick it to a content parent object
+        button = Instantiate(buttonPrefab, fileStart.transform.position, Quaternion.identity);
+        objectList.Add(button);
+        button.GetComponentInChildren<TextMeshPro>().text = fileName;
+        button.GetComponent<FileButton>().filePath = filePath;
+        button.transform.parent = content.transform;
     }
 }
