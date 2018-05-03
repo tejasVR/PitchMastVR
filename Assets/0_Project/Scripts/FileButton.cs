@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class FileButton : MonoBehaviour {
 
+    #region VARIABLES
     private Renderer rend;
     public string filePath;
-
     VRFileBrowser fileBrowser;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         rend = GetComponent<Renderer>();
         fileBrowser = VRFileBrowser.Instance;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    #region ON TRIGGER FUNCTIONS
 
     // If the button is in contact with a controller, turn yellow
     private void OnTriggerEnter(Collider other)
@@ -29,6 +27,7 @@ public class FileButton : MonoBehaviour {
         }
     }
 
+    // If the controller on the button is pulled away (i.e., pressed), open that directory/file
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Controller")
@@ -36,4 +35,5 @@ public class FileButton : MonoBehaviour {
             fileBrowser.ShowFullDirectory(filePath);
         }
     }
+    #endregion
 }

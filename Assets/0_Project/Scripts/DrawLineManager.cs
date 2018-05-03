@@ -14,7 +14,7 @@ public class DrawLineManager : MonoBehaviour {
     public MeshLineRenderer currLine2;
     public MeshLineRenderer currLine3;
 
-
+    // Creates 
     public int numClicks = 0;
     public Material matter;
     private float width = .1f;

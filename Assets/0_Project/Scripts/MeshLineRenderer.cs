@@ -43,8 +43,6 @@ public class MeshLineRenderer : MonoBehaviour
 
         if (s != Vector3.zero)
         {
-
-
             AddLine(ml, MakeQuad(s, sl, point, point1, lineSize, firstQuad));
             firstQuad = false;
             //s = point;

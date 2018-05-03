@@ -8,117 +8,73 @@ using UnityEngine.UI;
 
 public class PresentationManager : MonoBehaviour {
 
+    #region SINGLETON
     public static PresentationManager Instance;
-
-    //public static PDFConvert pdfConvert;
-    // Basic tracking for Vive wands
-    public SteamVR_TrackedObject trackedObj;
-    private SteamVR_Controller.Device device;
-    public Vector2 touchpad; // links Vive touchpad to Vector2
-
-    DrawLineManager drawLineManager;
-
-    //public int totalNumberOfSlides;
-
-    public RawImage currentSlide;
-    public int slideNumber = 0;
-    public Texture2D[] slides;
-    //public List<GameObject> slidesToDraw = new List<GameObject>();
-    public GameObject[] slidesToDraw;
-
-    public Transform slideDrawParent;
-
-    public string explorerPDFPath;
-
-
-    // The local path within the Unity project where a presentations' images are stored
-    public static string presentationLocalImagesPath;
-
     private void Awake()
     {
         Instance = this;
     }
+    #endregion
+
+    #region VARIABLES
+    DrawLineManager drawLineManager;
+
+    // Track what slide Image and number we are cuttently on
+    public RawImage currentSlide;
+    public int slideNumber = 0;
+
+    // Create an array of textures for each slide, as well as a game object if we need to save drawings for each slide
+    public Texture2D[] slides;
+    public GameObject[] slidesToDraw;
+
+    // The transform parent where each slide drawing is attached to
+    public Transform slideDrawParent;
+
+    // The local path within the Unity project where a presentations' images are stored
+    public static string presentationLocalImagesPath;
+
+    #endregion
 
     void Start () {
-        //CollectImages();
-        //slides = new Texture[totalNumberOfSlides];
         drawLineManager = DrawLineManager.Instance;
+
         // Set the starting slide as the first slides in the slides array
         slidesToDraw = new GameObject[slides.Length];
-        //print("slideToDraw is now " + slidesToDraw.Count);
-
     }
 
-    void Update () {
+    #region FUNCTIONS
 
-        
-
-
-        // Update the Steam VR controllers every frame
-        /*if (trackedObj.gameObject.activeInHierarchy)
-        {
-            device = SteamVR_Controller.Input((int)trackedObj.index);
-
-            if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
-            {
-                touchpad = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
-
-                if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
-                {
-                    if (touchpad.x < 0)
-                    {
-                        SlidePrevious();
-                    }
-                    else
-                    {
-                        SlideNext();
-                    }
-                }
-            }
-
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
-            {
-                PresentImages();
-            }
-
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
-            {
-                //OpenExplorer();
-            }
-        }*/
-
-        // if we are touching the touchpad, get the coordinates of the Vector2
-        
-
-    }
-
+    // Return a game object for each drawing to be attached to
     public GameObject SaveDraw()
     {
+        // Create an empty gameObject
         GameObject slideDrawSpace;
 
+        // If there is already a alideDraw object for this slide
         if (slidesToDraw[slideNumber] != null)
         {
+            // reutn that existing object
             return slidesToDraw[slideNumber].gameObject;
-
-        }else
+        
+        }
+        // or create a new object
+        else
         {
+            // name the object, parent it, and return that gameObject
             slideDrawSpace = new GameObject(slideNumber + "_draw");
             slideDrawSpace.transform.parent = slideDrawParent;
             slidesToDraw[slideNumber] = slideDrawSpace;
             return slidesToDraw[slideNumber].gameObject;
-
         }
-        //if(slidesToDraw[slideNumber])
-
     }
 
+    // Take the folder of images into something that can be featured on a canvas
     public void PresentImages()
     {
-        print("Presentation Local Images Path: " + presentationLocalImagesPath);
-        print("Presenting images to canvas");
-
         // Scans the folder for Texture2D files, and then imports all files into the slides array to be used in a persentation format
         slides = Resources.LoadAll<Texture2D>(presentationLocalImagesPath);
+
+        // If there are any existing objects contains drawings, destroy those objects
         foreach (GameObject s in slidesToDraw)
         {
             if (s != null)
@@ -126,67 +82,22 @@ public class PresentationManager : MonoBehaviour {
                 Destroy(s);
             }
         }
+
+        // Create a new array to keep the users' drawed objects
         slidesToDraw = new GameObject[slides.Length];
+
+        // Sets the current slide counter to 0, and gets the first image of the presentation onto the canvas
         slideNumber = 0;
         currentSlide.GetComponent<RawImage>().texture = slides[0];
-
-
-        //print(slides[0]);
-        //print("Collecting Images");
-
     }
 
-    /*public void OpenExplorer()
-    {
-        // Sets filters for file browser
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("PDF", ".pdf"));
-        FileBrowser.SetDefaultFilter(".pdf");
-
-        //Adds quick like to file browser
-        FileBrowser.AddQuickLink("Users", "C:\\Users", null);
-
-        // Show a save file dialog
-        // onSuccess event: not registered (which means this dialog is pretty useless)
-        // onCancel event: not registered
-        // Save file/folder: file, Initial path: "C:\", Title: "Save As", submit button text: "Save"
-        // FileBrowser.ShowSaveDialog( null, null, false, "C:\\", "Save As", "Save" );
-
-        // Show a select folder dialog 
-        // onSuccess event: print the selected folder's path
-        // onCancel event: print "Canceled"
-        // Load file/folder: folder, Initial path: default (Documents), Title: "Select Folder", submit button text: "Select"
-        // FileBrowser.ShowLoadDialog( (path) => { Debug.Log( "Selected: " + path ); }, 
-        //                                () => { Debug.Log( "Canceled" ); }, 
-        //                                true, null, "Select Folder", "Select" );
-
-
-
-        
-        //explorerPDFPath = EditorUtility.OpenFilePanel("Overwrite PDF", "", "pdf");
-        //GetNewPDF();
-        
-
-        StartCoroutine(ShowLoadDialog());
-    }*/
-
-    /*
-    IEnumerator ShowLoadDialog()
-    {
-        yield return FileBrowser.WaitForLoadDialog(false, null, "Load PDF", "Load");
-        print("showing load dialog");
-        GetNewPDF(FileBrowser.Result);
-    }*/
-
+    // Gets the new PDF from the path, converts it via PDFConverter class, and automatically presents those images onto the canvas
     public void GetNewPDF(string getPDFPath)
     {
-        print("successfuly got the new PDF file");
         if (getPDFPath != null)
         {
-            //WWW www = new WWW("file://" + explorerPDFPath);
             PDFConvert.ConvertPDF(getPDFPath);
             PresentImages();
-            //print(www.ToString());
-           // print(explorerPDFPath);
         }
     }
 
@@ -208,6 +119,7 @@ public class PresentationManager : MonoBehaviour {
         CheckForSlideDrawing();
     }
 
+    // Function for going to the next slide
     public void SlideNext()
     {
         // increase the slide number count
@@ -225,12 +137,13 @@ public class PresentationManager : MonoBehaviour {
         CheckForSlideDrawing();
     }
 
+    // Make a determined string the folder path that holds all the presentation images
     public static void GetPresentionPath(string presentationPath)
     {
         presentationLocalImagesPath = presentationPath;
-        //print("Presentation Local Images Path: " + presentationLocalImagesPath);
     }
 
+    // check if there is a drawing attached to the current slide. If so, enable the game object
     public void CheckForSlideDrawing()
     {
         foreach (GameObject s in slidesToDraw)
@@ -246,4 +159,6 @@ public class PresentationManager : MonoBehaviour {
             slidesToDraw[slideNumber].SetActive(true);
         }
     }
+
+    #endregion
 }
