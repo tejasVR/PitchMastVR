@@ -6,10 +6,10 @@ public class LaserPointer : MonoBehaviour {
 
     private LineRenderer lr;
     public bool collidingWithScreen;
+    public SteamVR_TrackedObject trackedObj;
 
     public ControllerManager controllerMananger;
 
-	// Use this for initialization
 	void Awake () {
 
         lr = GetComponent<LineRenderer>();
@@ -17,14 +17,13 @@ public class LaserPointer : MonoBehaviour {
         
 	}
 	
-	// Update is called once per frame
 	void Update () {
         lr.SetPosition(0, transform.position);
-        //lr.SetPosition(1, controllerMananger.transform.forward * 5);
+        Debug.DrawRay(transform.position, trackedObj.transform.forward, Color.green);
 
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit))
+        if (Physics.Raycast(transform.position, trackedObj.transform.forward, out hit))
         {
             if (hit.collider.gameObject.tag == "Screen")
             {
@@ -32,15 +31,21 @@ public class LaserPointer : MonoBehaviour {
                 //lr.SetPosition(1, new Vector3(0, 0, hit.distance));
                 controllerMananger.screenHitPoint = lr.GetPosition(1);
                 collidingWithScreen = true;
+                print("calling raycast");
             }
-        } else
-        {
-            //lr.SetPosition(0, transform.position);
+            else
+            {
+                //lr.SetPosition(0, transform.position);
 
-            //lr.SetPosition(1, new Vector3(0, 0, 10));
-            lr.SetPosition(1, transform.position);
-            collidingWithScreen = false;
+                //lr.SetPosition(1, new Vector3(0, 0, 10));
+                //lr.SetPosition(1, transform.position);
+                print("calling else");
+                collidingWithScreen = false;
+                lr.SetPosition(1, transform.position);
+
+            }
         }
+        
 		
 	}
 

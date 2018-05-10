@@ -18,6 +18,8 @@ public class ControllerManager : MonoBehaviour {
     public Vector3 screenHitPoint;
     public bool fileBrowserOpen;
 
+    public bool drawingOnScreen;
+
     #endregion
 
     void Start () {
@@ -70,31 +72,36 @@ public class ControllerManager : MonoBehaviour {
             if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
             {
                 // turn on the laser pointer
-                laserPointer.LaserOn();
+                //laserPointer.LaserOn();
 
                 // If the laser is colliding with the slide canvas, initialize the drawing
                 if (laserPointer.collidingWithScreen)
-                {
-                    drawLineManager.DrawInitialize();
-                }
+                    drawingOnScreen = true;
+                
+                drawLineManager.DrawInitialize();
+
             }
 
             // If we keep pressing on the trigger button,
             if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
             {
                 // keep drawing!
-                if (laserPointer.collidingWithScreen)
+                if (drawingOnScreen)
                 {
                     drawLineManager.DrawLine(screenHitPoint);
+                } else
+                {
+                    drawLineManager.DrawLine(transform.position);
                 }
             }
 
             // If we are not pressing the trigger button anymore, save the drawing
             if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
             {
-                laserPointer.LaserOff();
-
+                //laserPointer.LaserOff();
+                
                 drawLineManager.DrawStop(transform.position, presentationManager.SaveDraw());
+                drawingOnScreen = false;
             }
         }
         
