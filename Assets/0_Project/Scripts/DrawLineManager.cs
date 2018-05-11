@@ -17,7 +17,7 @@ public class DrawLineManager : MonoBehaviour {
     // Creates 
     public int numClicks = 0;
     public Material matter;
-    private float width = .1f;
+    public float width = .1f;
 
     //public GameObject UndoManager;
     //public Transform meshparent;

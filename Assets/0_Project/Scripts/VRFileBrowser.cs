@@ -30,6 +30,7 @@ public class VRFileBrowser : MonoBehaviour {
     public int numberOfFiles;
     public GameObject content;
     public GameObject buttonPrefab;
+    public GameObject directoryText;
 
     // For spacing of how each button in the VR browser is laid out
     public int filesPerRow;
@@ -67,7 +68,6 @@ public class VRFileBrowser : MonoBehaviour {
         else
         {
             directoryOpen = true;
-
             // Create an array of FileInfo based on all the files in the DirectoryInfo
             FileInfo[] files = dir.GetFiles("*.pdf");
             DirectoryInfo[] folders = dir.GetDirectories("*");
@@ -104,7 +104,11 @@ public class VRFileBrowser : MonoBehaviour {
                     column++;
                 }
             }
-        }   
+
+            directoryText.SetActive(true);
+            directoryText.GetComponent<TextMeshPro>().text = "Current Directory: /n" + dir.ToString();
+
+        }
     }
 
     public void HideDirectory()
@@ -113,6 +117,8 @@ public class VRFileBrowser : MonoBehaviour {
         {
             Destroy(obj.gameObject);
         }
+
+        directoryText.SetActive(false);
 
         directoryOpen = false;
     }

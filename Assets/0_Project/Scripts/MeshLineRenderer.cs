@@ -19,7 +19,7 @@ public class MeshLineRenderer : MonoBehaviour
 
     private Vector3 s;
     private Vector3 sl;
-    public float lineSize = 0.1f;
+    public float lineSize = 0.25f;
 
     private bool firstQuad = true;
 
@@ -44,7 +44,8 @@ public class MeshLineRenderer : MonoBehaviour
         if (s != Vector3.zero)
         {
             AddLine(ml, MakeQuad(s, sl, point, point1, lineSize, firstQuad));
-            firstQuad = false;
+            //firstQuad = false;
+            firstQuad = true;
             //s = point;
         }
 
