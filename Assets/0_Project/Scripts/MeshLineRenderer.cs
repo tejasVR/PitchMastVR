@@ -19,7 +19,7 @@ public class MeshLineRenderer : MonoBehaviour
 
     private Vector3 s;
     private Vector3 sl;
-    public float lineSize = 0.04f;
+    public float lineSize = 0.1f;
 
     private bool firstQuad = true;
 

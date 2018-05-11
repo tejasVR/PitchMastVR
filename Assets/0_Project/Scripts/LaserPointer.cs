@@ -22,29 +22,30 @@ public class LaserPointer : MonoBehaviour {
         Debug.DrawRay(transform.position, trackedObj.transform.forward, Color.green);
 
         RaycastHit hit;
-
-        if (Physics.Raycast(transform.position, trackedObj.transform.forward, out hit))
+        int layerMask = 1 << 9;
+        //layerMask = ~layerMask;
+        if (Physics.Raycast(transform.position, trackedObj.transform.forward, out hit, Mathf.Infinity, layerMask))
         {
-            if (hit.collider.gameObject.tag == "Screen")
+            //if (hit.collider.gameObject.tag == "Screen")
             {
                 lr.SetPosition(1, hit.point);
                 //lr.SetPosition(1, new Vector3(0, 0, hit.distance));
                 controllerMananger.screenHitPoint = lr.GetPosition(1);
                 collidingWithScreen = true;
-                print("calling raycast");
+                //print("calling raycast");
             }
-            else
+            
+        }else
             {
                 //lr.SetPosition(0, transform.position);
 
                 //lr.SetPosition(1, new Vector3(0, 0, 10));
                 //lr.SetPosition(1, transform.position);
-                print("calling else");
+                //print("calling else");
                 collidingWithScreen = false;
                 lr.SetPosition(1, transform.position);
 
             }
-        }
         
 		
 	}
